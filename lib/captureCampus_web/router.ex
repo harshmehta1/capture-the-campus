@@ -17,7 +17,15 @@ defmodule CaptureCampusWeb.Router do
     pipe_through :browser # Use the default browser stack
 
     get "/", PageController, :index
+    get "/users", PageController, :index
+    get "/users/:id", PageController, :index
+  end
+
+  # Other scopes may use custom stacks.
+  scope "/api/v1", CaptureCampusWeb do
+    pipe_through :api
     resources "/users", UserController, except: [:new, :edit]
+    post "/token", TokenController, :create
   end
 
   # Other scopes may use custom stacks.

@@ -101,4 +101,14 @@ defmodule CaptureCampus.Users do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  @doc """
+  Fetches and authenticates user using comeonin and argon2
+"""
+  def get_and_auth_user(name, pass) do
+    user = Repo.one(from u in User, where: u.name == ^name)
+    Comeonin.Argon2.check_pass(user, pass)
+  end
 end
+
+# Attribution - http://www.ccs.neu.edu/home/ntuck/courses/2018/01/cs4550/notes/20-redux/notes.html

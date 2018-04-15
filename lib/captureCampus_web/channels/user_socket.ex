@@ -3,6 +3,9 @@ defmodule CaptureCampusWeb.UserSocket do
 
   ## Channels
   # channel "room:*", CaptureCampusWeb.RoomChannel
+  channel "lobby", CaptureCampusWeb.LobbyChannel
+  channel "game:*", CaptureCampusWeb.GameChannel
+
 
   ## Transports
   transport :websocket, Phoenix.Transports.WebSocket
@@ -19,9 +22,15 @@ defmodule CaptureCampusWeb.UserSocket do
   #
   # See `Phoenix.Token` documentation for examples in
   # performing token verification on connect.
-  def connect(_params, socket) do
-    {:ok, socket}
+  def connect(%{"id" => player_id}, socket) do
+    {:ok, assign(socket, :player_id, player_id)}
   end
+
+  def connect(_, _socket), do: :error
+  #
+  # def connect(_params, socket) do
+  #   {:ok, socket}
+  # end
 
   # Socket id's are topics that allow you to identify all sockets for a given user:
   #
@@ -33,5 +42,7 @@ defmodule CaptureCampusWeb.UserSocket do
   #     CaptureCampusWeb.Endpoint.broadcast("user_socket:#{user.id}", "disconnect", %{})
   #
   # Returning `nil` makes this socket anonymous.
-  def id(_socket), do: nil
+  def id(socket), do: "players_socket:#{socket.assigns.player_id}"
+
+  # def id(_socket), do: nil
 end

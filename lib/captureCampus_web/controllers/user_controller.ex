@@ -11,7 +11,11 @@ defmodule CaptureCampusWeb.UserController do
     render(conn, "index.json", users: users)
   end
 
-  def create(conn, %{"user" => user_params}) do
+  def create(conn, user_params) do
+    ps = Map.get(user_params, "password");
+    p = Comeonin.Argon2.hashpwsalt(ps)
+    IO.inspect(p)
+    user_params = Map.put(user_params, "password_hash", p)
     with {:ok, %User{} = user} <- Users.create_user(user_params) do
       conn
       |> put_status(:created)
