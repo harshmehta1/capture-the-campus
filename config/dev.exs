@@ -51,8 +51,8 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :captureCampus, CaptureCampus.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "capturecampus",
-  password: "postgres",
-  database: "capturecampus_dev",
+  username: "capture",
+  password: "Password",
+  database: "capture_dev",
   hostname: "localhost",
   pool_size: 10
