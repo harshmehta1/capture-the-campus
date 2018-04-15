@@ -32,7 +32,42 @@ export default function Lobby(props) {
       window.location = "/";
   }
 
-  return <div><h2>Logged in</h2> { logout_fn } </div>;
+  return <div className="container">
+    <div className="row">
+      <div className="col offset-9">
+        { logout_fn }
+      </div>
+    </div>
+    <div className="row">
+      <div className="col">
+        <div className="form-group">
+          <label for="new-game">New Game: </label>
+          <input type="text" className="form-control" placeholder="Game Name" id="new-game"/>
+          <label class="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp"/>2v2</label>
+          <label class="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>3v3</label>
+          <label class="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>4v4</label><br/>
+          <button className="btn btn-success">Create Game</button>
+
+        </div>
+      </div>
+      <div className="col">
+        <div className="form-group">
+          <label for="exisiting-game">Existing Games:</label>
+          <select class="form-control" id="exisiting-game">
+            <option>
+              Sample
+            </option>
+            <option>
+              Sample 2
+            </option>
+          </select><br/>
+          <button className="btn btn-primary">Join Game</button>
+        </div>
+      </div>
+    </div>
+
+
+    </div>;
 
   // let tasks = _.map(params.tasks, (pp) => <Task key={pp.id} user={params.user} task={pp} />);
 }

@@ -77,17 +77,18 @@ let RegisterForm = connect(({register}) => {return {register};})((props) => {
     console.log(props.login);
   }
 
-  return <div className="navbar-text">
-    <Form inline>
+  return <div className="navbar-text" style={{marginLeft: "auto", marginRight: "auto", width: 100+"%", marginTop: 5+"%"}}>
+    <Form>
+      <h4>Login</h4>
       <FormGroup>
         <Input type="text" name="name" placeholder="name"
                value={props.login.name} onChange={update} />
       </FormGroup>
       <FormGroup>
         <Input type="password" name="pass" placeholder="password"
-               value={props.login.pass} onChange={update} style={{marginLeft: 10}}/>
+               value={props.login.pass} onChange={update}/>
       </FormGroup>
-      <Button className="btn btn-success" onClick={create_token} style={{marginLeft: 10}}>Log In</Button>
+      <Button className="btn btn-success" onClick={create_token}>Log In</Button>
     </Form>
   </div>;
 });
