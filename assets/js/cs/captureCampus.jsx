@@ -6,6 +6,7 @@ import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Login from './login';
 import { Link } from 'react-router-dom';
 import Lobby from './lobby';
+import GamePage from './gamepage';
 
 export default function captureCampus_init(store){
   let root = document.getElementById('root');
@@ -29,6 +30,9 @@ let CaptureCampus = connect((state) => state)((props) => {
         <Route path="/" exact={true} render={() =>
           page
         } />
+      <Route path="/game" exact={true} render={() =>
+          <GamePage />
+        }/>
       </div>
     </Router>
   );

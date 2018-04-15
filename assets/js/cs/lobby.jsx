@@ -61,7 +61,7 @@ export default function Lobby(props) {
               Sample 2
             </option>
           </select><br/>
-          <button className="btn btn-primary">Join Game</button>
+        <Link to="/game"><button className="btn btn-primary">Join Game</button></Link>
         </div>
       </div>
     </div>
