@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom';
 import { Provider, connect } from 'react-redux';
 import { Button, FormGroup, Label, Input } from 'reactstrap';
 import Login from './login';
-import { Link } from 'react-router-dom';
+import { Link,  Redirect, withRouter } from 'react-router-dom';
 import Lobby from './lobby';
 import GamePage from './gamepage';
 import api from '../api';
@@ -17,9 +17,10 @@ export default function captureCampus_init(store){
 
 let CaptureCampus = connect((state) => state)((props) => {
 
-
+  let isLoggedIn;
   let page = <div></div>;
   if (props.token){
+    isLoggedIn = true;
     page =   <div>
         <Lobby token={props.token} />
     </div>;
@@ -27,11 +28,14 @@ let CaptureCampus = connect((state) => state)((props) => {
     let exisitingToken = JSON.parse(localStorage.getItem("user_token"));
 
     if(exisitingToken){
+      isLoggedIn = true;
       api.set_token(exisitingToken);
     } else {
+      isLoggedIn = false;
       page = <div><Login /></div>;
     }
   }
+
   return (
     <Router>
       <div>
@@ -39,7 +43,7 @@ let CaptureCampus = connect((state) => state)((props) => {
           page
         } />
       <Route path="/game" exact={true} render={() =>
-          <GamePage />
+          isLoggedIn === true ? <GamePage /> : <Redirect to="/"/>
         }/>
       </div>
     </Router>

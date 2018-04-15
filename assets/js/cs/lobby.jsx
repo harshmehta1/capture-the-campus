@@ -12,6 +12,7 @@ let Session = connect(({token}) => {return {token};})((props) => {
     props.dispatch({
       type: 'CLEAR_TOKEN',
     });
+    localStorage.clear();
   }
 
   console.log("SESSION")
