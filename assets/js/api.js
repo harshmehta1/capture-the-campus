@@ -46,6 +46,8 @@ class TheServer {
           type: 'SET_TOKEN',
           token: resp,
         })
+
+        localStorage.setItem("user_token", JSON.stringify(resp));
         console.log(resp)
 
       },
@@ -53,6 +55,13 @@ class TheServer {
         alert("Invalid Login Details");
       },
     });
+  }
+
+  set_token(resp){
+    store.dispatch({
+      type: 'SET_TOKEN',
+      token: resp,
+    })
   }
 }
 

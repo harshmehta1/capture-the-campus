@@ -41,19 +41,19 @@ export default function Lobby(props) {
     <div className="row">
       <div className="col">
         <div className="form-group">
-          <label for="new-game">New Game: </label>
+          <label htmlFor="new-game">New Game: </label>
           <input type="text" className="form-control" placeholder="Game Name" id="new-game"/>
-          <label class="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp"/>2v2</label>
-          <label class="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>3v3</label>
-          <label class="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>4v4</label><br/>
+          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp"/>2v2</label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>3v3</label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp"/>4v4</label><br/>
           <button className="btn btn-success">Create Game</button>
 
         </div>
       </div>
       <div className="col">
         <div className="form-group">
-          <label for="exisiting-game">Existing Games:</label>
-          <select class="form-control" id="exisiting-game">
+          <label htmlFor="exisiting-game">Existing Games:</label>
+          <select className="form-control" id="exisiting-game">
             <option>
               Sample
             </option>

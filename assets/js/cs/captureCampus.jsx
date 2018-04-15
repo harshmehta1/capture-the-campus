@@ -7,6 +7,7 @@ import Login from './login';
 import { Link } from 'react-router-dom';
 import Lobby from './lobby';
 import GamePage from './gamepage';
+import api from '../api';
 
 export default function captureCampus_init(store){
   let root = document.getElementById('root');
@@ -16,13 +17,20 @@ export default function captureCampus_init(store){
 
 let CaptureCampus = connect((state) => state)((props) => {
 
+
   let page = <div></div>;
   if (props.token){
     page =   <div>
         <Lobby token={props.token} />
     </div>;
   } else {
-    page = <div><Login /></div>;
+    let exisitingToken = JSON.parse(localStorage.getItem("user_token"));
+
+    if(exisitingToken){
+      api.set_token(exisitingToken);
+    } else {
+      page = <div><Login /></div>;
+    }
   }
   return (
     <Router>

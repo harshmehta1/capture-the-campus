@@ -19,6 +19,7 @@ defmodule CaptureCampusWeb.Router do
     get "/", PageController, :index
     get "/users", PageController, :index
     get "/users/:id", PageController, :index
+    get "/game", PageController, :index
   end
 
   # Other scopes may use custom stacks.
