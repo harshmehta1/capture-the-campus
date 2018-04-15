@@ -27,6 +27,7 @@ defmodule CaptureCampusWeb.Router do
     pipe_through :api
     resources "/users", UserController, except: [:new, :edit]
     post "/token", TokenController, :create
+    post "/newgame", FindGameController, :findGame
   end
 
   # Other scopes may use custom stacks.

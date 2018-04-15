@@ -1,4 +1,5 @@
 import store from './store';
+import socket from "./socket";
 
 class TheServer {
 
@@ -63,6 +64,34 @@ class TheServer {
       token: resp,
     })
   }
+
+  findMatch(user_id)
+ {
+   let data = {
+       user_id: user_id
+   }
+   $.ajax("/api/v1/newgame/", {
+     method: "post",
+     dataType: "json",
+     contentType: "application/json; charset=UTF-8",
+     data: JSON.stringify(data),
+     success: (resp) => {
+         console.log(resp.channel_no);
+         localStorage.setItem("channelNo", resp.channel_no); //caching the channel no for reconnection.
+         let channel = socket.channel("games:"+resp.channel_no, {})
+         channel.join()
+           .receive("ok", console.log("Joined successfully", resp))
+           .receive("error", resp => { console.log("Unable to join", resp) }); 
+         // channel.push("addUser", {user_id: this.state.user.id})
+         // channel.on("shout", this.passToState.bind(this))
+         // this.setState(_.extend(this.state, {channel: channel}))
+       },
+     error:(resp) => {
+       alert("Something went wrong!")
+     }
+   });
+ }
+
 }
 
 export default new TheServer();
