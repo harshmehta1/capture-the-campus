@@ -4,7 +4,8 @@ import { Button, Form, FormGroup, NavItem, Label, Input } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import Map from './map';
+import BostonMap from './map-boston';
+import CampusMap from './map-campus';
 
 
 export default function GamePage(props) {
@@ -22,7 +23,7 @@ export default function GamePage(props) {
   return <div>
     <div className="googleMaps">
       <h4>Google Map Component</h4>
-      <Map isMarkerShown />
+      <CampusMap isMarkerShown />
     </div>
     <div className="buttonPanel">
       { btn_panel }

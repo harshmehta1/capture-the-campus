@@ -1,3 +1,5 @@
+// Map with buildings in Downtown Boston
+
 import React from "react";
 import ReactDOM from "react-dom";
 import { compose, withProps } from "recompose";
@@ -11,7 +13,7 @@ import {
 
 let options = {
   enableHighAccuracy: true,
-  timeout: 5000,
+  timeout: 60000,
   maximumAge: 0
 };
 
@@ -34,7 +36,7 @@ function error(err) {
 navigator.geolocation.watchPosition(success, error, options);
 
 
-const Map = compose(
+const BostonMap = compose(
   withProps({
     googleMapURL:
       "https://maps.googleapis.com/maps/api/js?key=AIzaSyCaUikEycWixH_xYYkAenITaq-r7uM09Ug&v=3.exp&libraries=geometry,drawing,places",
@@ -49,36 +51,50 @@ const Map = compose(
     defaultZoom={16}
     defaultCenter={posn}>
     {props.isMarkerShown && (
-      // West Village H
-      <Marker
-        position={{ lat: 42.33857, lng: -71.092355 }}
-        title="West Village H"
-      />
+      // TD Garden
+      <Marker position={{ lat: 42.366198, lng: -71.062146 }} title="TD Garden"/>
     )}
     {props.isMarkerShown && (
-      // Dodge Hall
-      <Marker
-        position={{ lat: 42.340324, lng: -71.08785 }}
-        title="Dodge Hall"
-      />
+      // Paul Revere House
+      <Marker position={{ lat: 42.363738, lng: -71.053700 }} title="Paul Revere House"/>
     )}
     {props.isMarkerShown && (
-      // Marino Center
-      <Marker
-        position={{ lat: 42.340272, lng: -71.090269 }}
-        title="Marino Center"
-      />
+      // Paul Revere Statue
+      <Marker position={{ lat: 42.365570, lng: -71.053271 }} title="Paul Revere Statue"/>
     )}
     {props.isMarkerShown && (
-      // ISEC
-      <Marker position={{ lat: 42.337733, lng: -71.086912 }} title="ISEC" />
+      // New England Aquarium
+      <Marker position={{ lat: 42.359131, lng: -71.049581 }} title="New England Aquarium" />
     )}
     {props.isMarkerShown && (
-      // Snell (respawn area)
-      // Add custom marker here
+      // Boston Children's Museum
+      <Marker position={{ lat: 42.351868, lng: -71.049993 }} title="Boston Children's Museum" />
+    )}
+    {props.isMarkerShown && (
+      // Rose Kennedy Greenway
+      <Marker position={{ lat: 42.356991, lng: -71.051276 }} title="Rose Kennedy Greenway" />
+    )}
+    {props.isMarkerShown && (
+      // Union Oyster House
+      <Marker position={{ lat: 42.361288, lng: -71.056908 }} title="Union Oyster House" />
+    )}
+    {props.isMarkerShown && (
+      // Omni Parker House
+      <Marker position={{ lat: 42.357750, lng: -71.060031 }} title="Omni Parker House" />
+    )}
+    {props.isMarkerShown && (
+      // Christopher Columbus Park
+      <Marker position={{ lat: 42.360992, lng: -71.051634 }} title="Christopher Columbus Park" />
+    )}
+    {props.isMarkerShown && (
+      // Granary Burying Ground
+      <Marker position={{ lat: 42.357476, lng: -71.061721 }} title="Granary Burying Ground" />
+    )}
+    {props.isMarkerShown && (
+      // Faneuil Hall (respawn area)
       <Marker
-        position={{ lat: 42.338396, lng: -71.088071 }}
-        title="Snell Library"
+        position={{ lat: 42.360228, lng: -71.054772 }}
+        title="Faneuil Hall"
         icon={{
           path: google.maps.SymbolPath.CIRCLE,
           strokeColor: "blue",
@@ -100,4 +116,4 @@ const Map = compose(
   </GoogleMap>
 ));
 
-export default Map;
+export default BostonMap;
