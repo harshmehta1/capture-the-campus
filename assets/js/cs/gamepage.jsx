@@ -8,11 +8,12 @@ import Map from './map';
 
 
 export default function GamePage(props) {
-
+  console.log("props", props)
   let btn_panel = <div>
      <button className="btn btn-danger">Attack!</button>
-     <button className="btn btn-info" id="defendBtn">Defend</button></div>;
-
+     <button className="btn btn-info" id="defendBtn">Defend</button>
+     <Link to="/" onClick={() => api.leaveGame(props.props.token.user_id, props.props.game.game_size, props.props.channel)}>Leave Game</Link>
+     </div>
 // for when ko is added to state
   // if (props.ko){
   //   btn_panel = <div><button className="btn">Revive</button></div>

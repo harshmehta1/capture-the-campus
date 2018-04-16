@@ -16,7 +16,7 @@ let Session = connect(({token}) => {return {token};})((props) => {
   }
 
   console.log("SESSION")
-  console.log(props)
+  console.log(props.token)
 
   // let user_name = "demo";
   return <div className="navbar-text">

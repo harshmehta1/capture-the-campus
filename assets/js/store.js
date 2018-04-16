@@ -17,6 +17,7 @@ let empty_game = {
   team1: "",
   team2: "",
   channel_no: "",
+  game_size: "",
 }
 
 function register(state = empty_reg, action){

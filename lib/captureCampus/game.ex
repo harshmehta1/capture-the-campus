@@ -1,10 +1,11 @@
 defmodule CaptureCampus.Game do
 
-  def new(channel_no) do
+  def new(channel_no, game_size) do
     %{
       team1: [],
       team2: [],
       channel_no: channel_no,
+      game_size: game_size,
     }
   end
 

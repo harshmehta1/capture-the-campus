@@ -43,7 +43,7 @@ let CaptureCampus = connect((state) => state)((props) => {
           page
         } />
       <Route path="/game" exact={true} render={() =>
-          isLoggedIn === true ? <GamePage /> : <Redirect to="/"/>
+          isLoggedIn === true ? <GamePage props={props}/> : <Redirect to="/"/>
         }/>
       </div>
     </Router>
