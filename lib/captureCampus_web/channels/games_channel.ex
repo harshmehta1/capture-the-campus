@@ -5,16 +5,14 @@ defmodule CaptureCampusWeb.GamesChannel do
   alias CaptureCampus.GamesList
 
   def join("games:" <> channel_no, payload, socket) do
-    IO.inspect("JOIN")
-    IO.inspect(payload)
-    # if authorized?(payload) do
-      game = Game.new(channel_no)
-      IO.inspect(game)
+     if authorized?(payload) do
+      game = GameBackup.load(channel_no) || Game.new(channel_no)
+      GameBackup.save(channel_no, game)
       socket = socket |> assign(:channel_no, channel_no)
       {:ok, %{"game" => game}, socket}
-    # else
-      # {:error, %{reason: "unauthorized"}}
-    # end
+     else
+       {:error, %{reason: "unauthorized"}}
+     end
   end
 
   # # Channels can be used in a request/response fashion
@@ -23,12 +21,12 @@ defmodule CaptureCampusWeb.GamesChannel do
   #   {:reply, {:ok, payload}, socket}
   # end
   #
-  # def handle_in("addUser", payload, socket) do
-  #   game = Game.addPlayer(payload["user_id"], GameBackup.load(socket.assigns[:channel_no]))
-  #   GameBackup.save(socket.assigns[:channel_no], game)
-  #   broadcast socket, "shout", %{"game" => game}
-  #   {:noreply, socket}
-  # end
+   def handle_in("addUser", payload, socket) do
+     game = Game.addPlayer(payload["user_id"], payload["game_size"], GameBackup.load(socket.assigns[:channel_no]))
+     GameBackup.save(socket.assigns[:channel_no], game)
+     broadcast socket, "shout", %{"game" => game}
+     {:noreply, socket}
+   end
   #
   # def handle_in("deleteUser", payload, socket) do
   #   game = Game.removePlayer(payload["user_id"], GameBackup.load(socket.assigns[:channel_no]))

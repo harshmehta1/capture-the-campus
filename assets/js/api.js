@@ -65,10 +65,27 @@ class TheServer {
     })
   }
 
-  findMatch(user_id)
+  set_game(game)
+  {
+    store.dispatch({
+      type: 'UPDATE_GAME_STATE',
+      game: game.game,
+    })
+  }
+
+  set_channel(channel)
+  {
+    store.dispatch({
+      type: 'UPDATE_CHANNEL',
+      channel: channel,
+    })
+  }
+
+  findMatch(user_id, game_size)
  {
    let data = {
-       user_id: user_id
+       user_id: user_id,
+       game_size: parseInt(game_size)
    }
    $.ajax("/api/v1/newgame/", {
      method: "post",
@@ -81,10 +98,10 @@ class TheServer {
          let channel = socket.channel("games:"+resp.channel_no, {})
          channel.join()
            .receive("ok", console.log("Joined successfully", resp))
-           .receive("error", resp => { console.log("Unable to join", resp) }); 
-         // channel.push("addUser", {user_id: this.state.user.id})
-         // channel.on("shout", this.passToState.bind(this))
-         // this.setState(_.extend(this.state, {channel: channel}))
+           .receive("error", resp => { console.log("Unable to join", resp) });
+           channel.push("addUser", {user_id: user_id, game_size: parseInt(game_size)}).receive("ok", console.log("Player Added", resp))
+           channel.on("shout", this.set_game.bind(this.game))
+           this.set_channel(channel)
        },
      error:(resp) => {
        alert("Something went wrong!")

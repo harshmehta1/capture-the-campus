@@ -13,6 +13,11 @@ let empty_reg = {
   password: "",
 }
 
+let empty_game = {
+  team1: "",
+  team2: "",
+  channel_no: "",
+}
 
 function register(state = empty_reg, action){
   switch(action.type){
@@ -45,13 +50,35 @@ function login(state = empty_login, action) {
   }
 }
 
+function game(state = empty_game, action)
+{
+  switch(action.type)
+  {
+    case 'UPDATE_GAME_STATE':
+      return action.game;
+    default:
+      return state;
+  }
+}
+
+function channel(state = null, action)
+{
+  switch(action.type)
+  {
+    case 'UPDATE_CHANNEL':
+      return action.channel;
+    default:
+      return state;
+  }
+}
+
 function root_reducer(state0, action) {
-  console.log("reducer", action);
   // {posts, users, form} is ES6 shorthand for
   // {posts: posts, users: users, form: form}
-  let reducer = combineReducers({token, login, register});
+  let reducer = combineReducers({token, login, register, game, channel});
   let state1 = reducer(state0, action);
-  return deepFreeze(state1);
+  console.log("state", state1);
+  return (state1);
 };
 
 let store = createStore(root_reducer);

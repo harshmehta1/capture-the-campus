@@ -8,10 +8,10 @@ defmodule CaptureCampus.Game do
     }
   end
 
-  def addPlayer(user_id, state) do
+  def addPlayer(user_id, game_size, state) do
     team1 = state.team1
     team2 = state.team2
-    if length(team1) < 4 do
+    if length(team1) < div(game_size, 2) do
       team1 = team1 ++ [user_id]
       state = Map.put(state, :team1, team1)
     else
