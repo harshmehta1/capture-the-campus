@@ -8,6 +8,32 @@ import {
   Marker
 } from "react-google-maps";
 
+
+let options = {
+  enableHighAccuracy: true,
+  timeout: 5000,
+  maximumAge: 0
+};
+
+let posn;
+
+function success(pos) {
+  var crd = pos.coords;
+
+  console.log('Your current position is:');
+  console.log(`Latitude : ${crd.latitude}`);
+  console.log(`Longitude: ${crd.longitude}`);
+  console.log(`Accuracy is within ${crd.accuracy} meters.`);
+  posn = {lat: crd.latitude, lng: crd.longitude};
+}
+
+function error(err) {
+  console.warn(`ERROR(${err.code}): ${err.message}`);
+}
+
+navigator.geolocation.watchPosition(success, error, options);
+
+
 const Map = compose(
   withProps({
     googleMapURL:
@@ -21,7 +47,7 @@ const Map = compose(
 )(props => (
   <GoogleMap
     defaultZoom={16}
-    defaultCenter={{ lat: 42.3394299, lng: -71.0906958 }}>
+    defaultCenter={posn}>
     {props.isMarkerShown && (
       // West Village H
       <Marker
@@ -56,6 +82,17 @@ const Map = compose(
         icon={{
           path: google.maps.SymbolPath.CIRCLE,
           strokeColor: "blue",
+          scale: 10
+        }}
+      />
+    )}
+    {props.isMarkerShown && (
+      // Player location
+      <Marker
+        position={posn}
+        icon={{
+          path: google.maps.SymbolPath.CIRCLE,
+          strokeColor: "green",
           scale: 10
         }}
       />
