@@ -120,8 +120,19 @@ class TheServer {
    });
  }
 
- 
 
+  join_this_game(game_info)
+  {
+    let gameData = {
+      channel_no: game_info.channel_no,
+      game_size: game_info.game_size,
+    }
+
+    store.dispatch({
+        type: 'SET_GAME_TOKEN',
+        game_token: gameData,
+      })
+  }
 }
 
 export default new TheServer();

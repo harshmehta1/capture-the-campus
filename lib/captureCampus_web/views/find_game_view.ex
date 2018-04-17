@@ -6,4 +6,10 @@ defmodule CaptureCampusWeb.FindGameView do
       channel_no: channelNo,
     }
   end
+
+  def render("games.json", %{available_games: games}) do
+    %{
+      games: games,
+    }
+  end
 end

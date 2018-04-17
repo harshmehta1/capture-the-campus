@@ -16,7 +16,7 @@ defmodule CaptureCampusWeb.FindGameController do
       game_size == 2 ->
         cond do
           rank in 0..25 ->
-            {players, channelNo} = GamesList.load(14) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            {players, channelNo} = GamesList.load(12) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
             if !Enum.member?(players, user_id) do
               players = players ++ [user_id]
             end
@@ -34,7 +34,7 @@ defmodule CaptureCampusWeb.FindGameController do
               |> render("channelNo.json", channel_no: channelNo)
             end
           rank in 26-50 ->
-            {players, channelNo} = GamesList.load(24) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            {players, channelNo} = GamesList.load(22) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
             if !Enum.member?(players, user_id) do
               players = players ++ [user_id]
             end
@@ -52,7 +52,7 @@ defmodule CaptureCampusWeb.FindGameController do
               |> render("channelNo.json", channel_no: channelNo)
             end
           rank in 51-75 ->
-            {players, channelNo} = GamesList.load(34) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            {players, channelNo} = GamesList.load(32) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
             if !Enum.member?(players, user_id) do
               players = players ++ [user_id]
             end
@@ -70,7 +70,7 @@ defmodule CaptureCampusWeb.FindGameController do
               |> render("channelNo.json", channel_no: channelNo)
             end
           rank in 76-100 ->
-            {players, channelNo} = GamesList.load(44) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            {players, channelNo} = GamesList.load(42) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
             if !Enum.member?(players, user_id) do
               players = players ++ [user_id]
             end

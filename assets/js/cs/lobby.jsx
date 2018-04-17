@@ -7,7 +7,6 @@ import api from '../api';
 
 
 let Session = connect(({token}) => {return {token};})((props) => {
-
   function logout(){
     props.dispatch({
       type: 'CLEAR_TOKEN',
@@ -32,7 +31,7 @@ export default function Lobby(props) {
   } else {
       window.location = "/";
   }
-
+  //api.get_existing_games(props.token.user_id);
   return <div className="container">
     <div className="row">
       <div className="col offset-9">
@@ -55,13 +54,8 @@ export default function Lobby(props) {
       <div className="col">
         <div className="form-group">
           <label htmlFor="exisiting-game">Existing Games:</label>
-          <select className="form-control" id="exisiting-game">
-            <option>
-              Sample
-            </option>
-            <option>
-              Sample 2
-            </option>
+          <select className="form-control" id="exisiting-game" >
+
           </select><br/>
         <Link to="/game"><button className="btn btn-primary">Join Game</button></Link>
         </div>
