@@ -11,7 +11,7 @@ import {
 
 let options = {
   enableHighAccuracy: true,
-  timeout: 60000,
+  timeout: 10000,
   maximumAge: 0
 };
 
@@ -29,96 +29,78 @@ function success(pos) {
 
 function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
+
 }
 
 console.log("MAP")
 console.log(navigator.geolocation)
 
-if (navigator.geolocation) {
-       navigator.geolocation.watchPosition(success);
-} else {
-  alert("Geolocation is not supported by your browser!");
+// if (navigator.geolocation) {
+//        navigator.geolocation.watchPosition(success, error, options);
+// } else {
+//   alert("Geolocation is not supported by your browser!");
+// }
+
+function CamMap(props){
+  console.log("CAMMAP")
+  console.log(props)
+  let allBuildings = props.buildings;
+  let posn;
+
+  navigator.geolocation.watchPosition(function(pos){
+    posn = {lat: pos.coords.latitude, lng: pos.coords.longitude};
+  })
+  let markerList = _.map(allBuildings, function (x, ii) {
+    console.log(x);
+    return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
+  });
+
+  console.log(markerList)
+
+  const CampusMap = compose(
+    withProps({
+      googleMapURL:
+        "https://maps.googleapis.com/maps/api/js?key=AIzaSyCaUikEycWixH_xYYkAenITaq-r7uM09Ug&v=3.exp&libraries=geometry,drawing,places",
+      loadingElement: <div style={{ height: `100%` }} />,
+    containerElement: <div style={{ height: `100%` }} />,
+      mapElement: <div style={{ height: `100%` }} />
+    }),
+    withScriptjs,
+    withGoogleMap
+  )(props => (
+    <GoogleMap
+      defaultZoom={18}
+      defaultCenter={{ lat: 42.338396, lng: -71.088071 }}>
+      {markerList}
+      {props.isMarkerShown && (
+        // Snell (respawn area)
+        <Marker
+          position={{ lat: 42.338396, lng: -71.088071 }}
+          title="Snell Library"
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            strokeColor: "green",
+            scale: 10
+          }}
+        />
+      )}
+      {props.isMarkerShown && (
+        // Player location
+        <Marker
+          position={posn}
+          icon={{
+            path: google.maps.SymbolPath.CIRCLE,
+            strokeColor: "blue",
+            scale: 10
+          }}
+        />
+      )}
+    </GoogleMap>
+  ));
+
+
+  return  <CampusMap isMarkerShown />;
 }
 
 
-const CampusMap = compose(
-  withProps({
-    googleMapURL:
-      "https://maps.googleapis.com/maps/api/js?key=AIzaSyCaUikEycWixH_xYYkAenITaq-r7uM09Ug&v=3.exp&libraries=geometry,drawing,places",
-    loadingElement: <div style={{ height: `100%` }} />,
-  containerElement: <div style={{ height: `100%` }} />,
-    mapElement: <div style={{ height: `100%` }} />
-  }),
-  withScriptjs,
-  withGoogleMap
-)(props => (
-  <GoogleMap
-    defaultZoom={18}
-    defaultCenter={posn}>
-    {props.isMarkerShown && (
-      // West Village H
-      <Marker position={{ lat: 42.33857, lng: -71.092355 }} title="West Village H"/>
-    )}
-    {props.isMarkerShown && (
-      // Dodge Hall
-      <Marker position={{ lat: 42.340324, lng: -71.08785 }} title="Dodge Hall"/>
-    )}
-    {props.isMarkerShown && (
-      // Marino Center
-      <Marker position={{ lat: 42.340272, lng: -71.090269 }} title="Marino Center"/>
-    )}
-    {props.isMarkerShown && (
-      // ISEC
-      <Marker position={{ lat: 42.337733, lng: -71.086912 }} title="ISEC" />
-    )}
-    {props.isMarkerShown && (
-      // Ryder Hall
-      <Marker position={{ lat: 42.336605, lng: -71.090850 }} title="Ryder Hall" />
-    )}
-    {props.isMarkerShown && (
-      // MFA
-      <Marker position={{ lat: 42.339381, lng: -71.094048 }} title="MFA" />
-    )}
-    {props.isMarkerShown && (
-      // Matthew's Arena
-      <Marker position={{ lat: 42.341235, lng: -71.084523 }} title="Matthews Arena" />
-    )}
-    {props.isMarkerShown && (
-      // International Village
-      <Marker position={{ lat: 42.335102, lng: -71.089176 }} title="International Village" />
-    )}
-    {props.isMarkerShown && (
-      // Shillman Hall
-      <Marker position={{ lat: 42.337553, lng: -71.090191 }} title="Shillman Hall" />
-    )}
-    {props.isMarkerShown && (
-      // East Village
-      <Marker position={{ lat: 42.340437, lng: -71.086879 }} title="East Village" />
-    )}
-    {props.isMarkerShown && (
-      // Snell (respawn area)
-      <Marker
-        position={{ lat: 42.338396, lng: -71.088071 }}
-        title="Snell Library"
-        icon={{
-          path: google.maps.SymbolPath.CIRCLE,
-          strokeColor: "green",
-          scale: 10
-        }}
-      />
-    )}
-    {props.isMarkerShown && (
-      // Player location
-      <Marker
-        position={posn}
-        icon={{
-          path: google.maps.SymbolPath.CIRCLE,
-          strokeColor: "blue",
-          scale: 10
-        }}
-      />
-    )}
-  </GoogleMap>
-));
-
-export default CampusMap;
+export default CamMap;

@@ -4,14 +4,14 @@ import { Button, Form, FormGroup, NavItem, Label, Input } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import CampusMap from './map-campus';
+import CamMap from './map-campus';
 import socket from '../socket';
 import store from '../store';
 
 
 let joined = false;
 let channel;
-
+let currPos;
 
 
 function GamePage(props) {
@@ -19,7 +19,7 @@ function GamePage(props) {
   let btn_panel = <div>
      <button className="btn btn-danger">Attack!</button>
      <button className="btn btn-info" id="defendBtn">Defend</button>
-     <Link to="/" onClick={() => leaveGame()}>Leave Game</Link></div>;
+     <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
 
 // for when ko is added to state
   // if (props.ko){
@@ -28,6 +28,14 @@ function GamePage(props) {
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
   function joinChannel(){
+    navigator.geolocation.watchPosition(function(pos){
+      currPos = {
+        lat: pos.coords.latitude,
+        lng: pos.coords.longitude,
+      }
+      console.log(pos.coords.latitude)
+      console.log(pos.coords.longitude)
+    });
     localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully", resp)})
@@ -62,9 +70,11 @@ function GamePage(props) {
           .receive("ok", gotView.bind(this))
       });
 
+      console.log(props)
+
     return <div>
       <div className="googleMaps">
-        <CampusMap isMarkerShown />
+        <CamMap currPos={currPos} buildings={props.game.buildings}/>
       </div>
       <div className="buttonPanel">
         { btn_panel }

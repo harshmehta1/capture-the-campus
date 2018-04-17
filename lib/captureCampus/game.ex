@@ -6,7 +6,7 @@ defmodule CaptureCampus.Game do
       team2: [],
       team_size: game_size,
       channel_no: channel_no,
-      buildings: [],
+      buildings: Enum.take_random(buildingList(), game_size + 1),
     }
   end
 
@@ -29,6 +29,21 @@ defmodule CaptureCampus.Game do
       buildings: Map.get(game, "buildings"),
     }
   end
+
+  def buildingList() do
+    [%{:name => "West Village H", :lat => 42.33857, :lng => -71.092355 },
+      %{:name => "Dodge Hall", :lat => 42.340324, :lng => -71.08785 },
+      %{:name => "Marino Center", :lat => 42.340272, :lng => -71.090269 },
+      %{:name => "ISEC", :lat => 42.337733, :lng => -71.086912 },
+      %{:name => "Ryder Hall", :lat => 42.336605, :lng => -71.090850 },
+      %{:name => "MFA", :lat => 42.339381, :lng => -71.094048 },
+      %{:name => "Matthews Arena", :lat => 42.341235, :lng => -71.084523},
+      %{:name => "Internation Village", :lat => 42.335102, :lng => -71.089176},
+      %{:name => "Shillman Hall", :lat => 42.337553, :lng => -71.090191 },
+      %{:name => "East Village", :lat => 42.340437, :lng => -71.086879 }]
+  end
+
+
 
   def add_user(game, user_id) do
     IO.inspect(user_id)
@@ -76,7 +91,7 @@ defmodule CaptureCampus.Game do
     newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
     game = Map.replace!(game, "team1", newTeam1)
     game = Map.replace!(game, "team2", newTeam2)
-    
+
     IO.inspect("REMOVE")
     IO.inspect(game)
     game

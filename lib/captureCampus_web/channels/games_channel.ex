@@ -62,25 +62,25 @@ defmodule CaptureCampusWeb.GamesChannel do
        game_size == 2 ->
          cond do
           rank in 0..25 ->
-           {players, channelNo} = GamesList.load(14)
+           {players, channelNo} = GamesList.load(12)
            if Enum.member?(players, user_id) do
              players = List.delete(players, user_id)
              GamesList.save(12, {players, channelNo})
            end
            rank in 26..50 ->
-            {players, channelNo} = GamesList.load(24)
+            {players, channelNo} = GamesList.load(22)
             if Enum.member?(players, user_id) do
               players = List.delete(players, user_id)
               GamesList.save(22, {players, channelNo})
             end
             rank in 51..75 ->
-            {players, channelNo} = GamesList.load(34)
+            {players, channelNo} = GamesList.load(32)
             if Enum.member?(players, user_id) do
               players = List.delete(players, user_id)
               GamesList.save(32, {players, channelNo})
             end
             rank in 76..100 ->
-             {players, channelNo} = GamesList.load(44)
+             {players, channelNo} = GamesList.load(42)
              if Enum.member?(players, user_id) do
               players = List.delete(players, user_id)
               GamesList.save(42, {players, channelNo})
