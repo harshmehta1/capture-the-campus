@@ -20,10 +20,10 @@ let posn;
 function success(pos) {
   var crd = pos.coords;
 
-  console.log('Your current position is:');
+  // console.log('Your current position is:');
   console.log(`Latitude : ${crd.latitude}`);
   console.log(`Longitude: ${crd.longitude}`);
-  console.log(`Accuracy is within ${crd.accuracy} meters.`);
+  // console.log(`Accuracy is within ${crd.accuracy} meters.`);
   posn = {lat: crd.latitude, lng: crd.longitude};
 }
 
@@ -31,7 +31,14 @@ function error(err) {
   console.warn(`ERROR(${err.code}): ${err.message}`);
 }
 
-navigator.geolocation.watchPosition(success, error, options);
+console.log("MAP")
+console.log(navigator.geolocation)
+
+if (navigator.geolocation) {
+       navigator.geolocation.watchPosition(success);
+} else {
+  alert("Geolocation is not supported by your browser!");
+}
 
 
 const CampusMap = compose(
