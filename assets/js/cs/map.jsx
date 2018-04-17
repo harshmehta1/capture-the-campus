@@ -11,7 +11,7 @@ import {
 
 let options = {
   enableHighAccuracy: true,
-  timeout: 5000,
+  timeout: 10000,
   maximumAge: 0
 };
 
@@ -39,14 +39,14 @@ const Map = compose(
     googleMapURL:
       "https://maps.googleapis.com/maps/api/js?key=AIzaSyCaUikEycWixH_xYYkAenITaq-r7uM09Ug&v=3.exp&libraries=geometry,drawing,places",
     loadingElement: <div style={{ height: `100%` }} />,
-    containerElement: <div style={{ height: `500px` }} />,
+  containerElement: <div style={{ height: `100%` }} />,
     mapElement: <div style={{ height: `100%` }} />
   }),
   withScriptjs,
   withGoogleMap
 )(props => (
   <GoogleMap
-    defaultZoom={16}
+    defaultZoom={18}
     defaultCenter={posn}>
     {props.isMarkerShown && (
       // West Village H
@@ -81,7 +81,7 @@ const Map = compose(
         title="Snell Library"
         icon={{
           path: google.maps.SymbolPath.CIRCLE,
-          strokeColor: "blue",
+          strokeColor: "green",
           scale: 10
         }}
       />
@@ -92,7 +92,7 @@ const Map = compose(
         position={posn}
         icon={{
           path: google.maps.SymbolPath.CIRCLE,
-          strokeColor: "green",
+          strokeColor: "blue",
           scale: 10
         }}
       />

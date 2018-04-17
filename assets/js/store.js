@@ -13,6 +13,21 @@ let empty_reg = {
   password: "",
 }
 
+let empty_game = {
+  team1: [],
+  team2: [],
+  buildings: [],
+  channel_no: "",
+}
+
+function game(state = empty_game, action){
+  switch(action.type){
+    case 'UPDATE_GAME_STATE':
+      return Object.assign({},state,action.data);
+    default:
+      return state;
+  }
+}
 
 function register(state = empty_reg, action){
   switch(action.type){
@@ -36,6 +51,17 @@ function token(state = null, action) {
   }
 }
 
+function gameToken(state=null, action){
+  switch (action.type) {
+    case 'SET_GAME_TOKEN':
+      return action.game_token;
+    case 'CLEAR_GAME_TOKEN':
+      return "";
+    default:
+      return state;
+  }
+}
+
 function login(state = empty_login, action) {
   switch (action.type) {
     case 'UPDATE_LOGIN_FORM':
@@ -49,7 +75,7 @@ function root_reducer(state0, action) {
   console.log("reducer", action);
   // {posts, users, form} is ES6 shorthand for
   // {posts: posts, users: users, form: form}
-  let reducer = combineReducers({token, login, register});
+  let reducer = combineReducers({game, token, login, register, gameToken});
   let state1 = reducer(state0, action);
   return deepFreeze(state1);
 };

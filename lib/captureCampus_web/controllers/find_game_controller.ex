@@ -9,7 +9,7 @@ defmodule CaptureCampusWeb.FindGameController do
         if !Enum.member?(players, user_id) do
           players = players ++ [user_id]
         end
-        if length(players) <= 8 do
+        if length(players) <= 2 do
           GamesList.save(1, {players, channelNo})
           conn
           |> put_status(:created)

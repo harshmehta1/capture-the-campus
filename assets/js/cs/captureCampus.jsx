@@ -17,7 +17,10 @@ export default function captureCampus_init(store){
 
 let CaptureCampus = connect((state) => state)((props) => {
 
+  //Authentication Validation
   let isLoggedIn;
+  let isInGame;
+  let gameToken;
   let page = <div></div>;
   if (props.token){
     isLoggedIn = true;
@@ -34,7 +37,18 @@ let CaptureCampus = connect((state) => state)((props) => {
       isLoggedIn = false;
       page = <div><Login /></div>;
     }
+
   }
+  // gameToken = localStorage.getItem("channelNo");
+  //
+  // if(gameToken){
+  //   isInGame = true;
+  // } else {
+  //   isInGame = false;
+  // }
+
+  //Authentication Ends
+  //Channel broadcast receiver
 
   return (
     <Router>
@@ -43,7 +57,7 @@ let CaptureCampus = connect((state) => state)((props) => {
           page
         } />
       <Route path="/game" exact={true} render={() =>
-          isLoggedIn === true ? <GamePage /> : <Redirect to="/"/>
+          (isLoggedIn === true) ? <GamePage gameToken={props.gameToken} user={props.token}/> : <Redirect to="/"/>
         }/>
       </div>
     </Router>

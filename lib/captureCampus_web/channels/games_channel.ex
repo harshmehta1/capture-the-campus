@@ -4,18 +4,34 @@ defmodule CaptureCampusWeb.GamesChannel do
   alias CaptureCampus.Game
   alias CaptureCampus.GamesList
 
-  def join("games:" <> channel_no, payload, socket) do
+  def join("games:" <> channel_no, %{"user_id" => user_id}, socket) do
     IO.inspect("JOIN")
-    IO.inspect(payload)
-    # if authorized?(payload) do
-      game = Game.new(channel_no)
-      IO.inspect(game)
-      socket = socket |> assign(:channel_no, channel_no)
-      {:ok, %{"game" => game}, socket}
-    # else
-      # {:error, %{reason: "unauthorized"}}
-    # end
+    game = CaptureCampus.GameBackup.load(channel_no) || Game.new(channel_no)
+    game = Game.add_user(game, user_id)
+    IO.inspect(game)
+    send(self, {:after_join, game})
+    socket = socket
+      |> assign(:game, game)
+      |> assign(:channel_no, channel_no)
+      |> assign(:user_id, user_id)
+    {:ok, %{"join" => channel_no, "game" => Game.client_view(game)}, socket}
   end
+
+  def handle_info({:after_join, game}, socket) do
+    IO.inspect("AFTER_JOIN")
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
+
+  def handle_in("update_state", game, socket) do
+    IO.inspect("broadcast received")
+    IO.inspect(game)
+    game = Game.update_state(game)
+    CaptureCampus.GameBackup.save(socket.assigns[:channel_no], game)
+    socket = assign(socket, :game, game)
+    {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
+  end
+
 
   # # Channels can be used in a request/response fashion
   # # by sending replies to requests from the client

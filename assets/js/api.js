@@ -77,14 +77,12 @@ class TheServer {
      data: JSON.stringify(data),
      success: (resp) => {
          console.log(resp.channel_no);
-         localStorage.setItem("channelNo", resp.channel_no); //caching the channel no for reconnection.
-         let channel = socket.channel("games:"+resp.channel_no, {})
-         channel.join()
-           .receive("ok", console.log("Joined successfully", resp))
-           .receive("error", resp => { console.log("Unable to join", resp) }); 
-         // channel.push("addUser", {user_id: this.state.user.id})
-         // channel.on("shout", this.passToState.bind(this))
-         // this.setState(_.extend(this.state, {channel: channel}))
+
+          store.dispatch({
+              type: 'SET_GAME_TOKEN',
+              game_token: resp.channel_no,
+            })
+
        },
      error:(resp) => {
        alert("Something went wrong!")
