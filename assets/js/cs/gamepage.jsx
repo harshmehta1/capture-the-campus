@@ -59,7 +59,7 @@ function GamePage(props) {
           .receive("ok", gotView.bind(this))
       });
 
-    game = <div>
+    return <div>
       <div className="googleMaps">
         <CampusMap isMarkerShown />
       </div>
@@ -81,11 +81,11 @@ function GamePage(props) {
 
   } else {
 
-    game = <div>Loading Game</div>;
+    return <div>Loading Game</div>;
 
   }
 
-  return game;
+  // return game;
 
 }
 
