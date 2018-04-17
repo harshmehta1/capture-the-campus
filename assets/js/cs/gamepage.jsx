@@ -28,12 +28,10 @@ function GamePage(props) {
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
   function joinChannel(){
-    console.log("JOINING")
     localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully", resp)})
       .receive("error", resp => { console.log("Unable to join", resp) });
-    console.log(channel)
       joined=true;
   }
 
@@ -60,7 +58,6 @@ function GamePage(props) {
     }
 
     channel.on("state_update", game => {
-      console.log(channel)
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });

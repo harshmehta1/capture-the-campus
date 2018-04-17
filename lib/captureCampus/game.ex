@@ -69,20 +69,17 @@ defmodule CaptureCampus.Game do
     state
   end
 
-  def removePlayer(state, user_id) do
-    team1 = state.team1
-    team2 = state.team2
-    if Enum.member?(team1, user_id) do
-      team1 = List.delete(team1, user_id)
-      state = Map.put(state, :team1, team1)
-    end
-    if Enum.member?(team2, user_id) do
-      team2 = List.delete(team2, user_id)
-      state = Map.put(state, :team2, team2)
-    end
+  def removePlayer(game, user_id) do
+    team1 = Map.get(game, "team1")
+    newTeam1 = Enum.filter(team1, fn(x) -> Map.get(x, "user_id")!=user_id end)
+    team2 = Map.get(game, "team2")
+    newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
+    game = Map.replace!(game, "team1", newTeam1)
+    game = Map.replace!(game, "team2", newTeam2)
+    
     IO.inspect("REMOVE")
-    IO.inspect(state)
-    state
+    IO.inspect(game)
+    game
   end
 
 end
