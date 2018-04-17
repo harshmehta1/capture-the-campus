@@ -28,14 +28,14 @@ function GamePage(props) {
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
   function joinChannel(){
-    navigator.geolocation.watchPosition(function(pos){
-      currPos = {
-        lat: pos.coords.latitude,
-        lng: pos.coords.longitude,
-      }
-      console.log(pos.coords.latitude)
-      console.log(pos.coords.longitude)
-    });
+    // navigator.geolocation.watchPosition(function(pos){
+    //   currPos = {
+    //     lat: pos.coords.latitude,
+    //     lng: pos.coords.longitude,
+    //   }
+    //   console.log(pos.coords.latitude)
+    //   console.log(pos.coords.longitude)
+    // });
     localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully", resp)})
@@ -74,7 +74,7 @@ function GamePage(props) {
 
     return <div>
       <div className="googleMaps">
-        <CamMap currPos={currPos} buildings={props.game.buildings}/>
+        <CamMap buildings={props.game.buildings}/>
       </div>
       <div className="buttonPanel">
         { btn_panel }
