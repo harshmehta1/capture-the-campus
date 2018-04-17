@@ -37,46 +37,55 @@ function GamePage(props) {
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
-  channel = socket.channel("games:"+props.gameToken.channel_no,
-  {user_id:props.user.user_id, game_size: props.gameToken.game_size})
+  let game = <div></div>;
+  if (props.gameToken) {
 
+    channel = socket.channel("games:"+props.gameToken.channel_no,
+    {user_id:props.user.user_id, game_size: props.gameToken.game_size})
 
-  if(!joined){
-    joinChannel(props);
-  }
+    if(!joined){
+      joinChannel(props);
+    }
 
-  function gotView(view){
-    props.dispatch({
-      type: 'UPDATE_GAME_STATE',
-      data: view.game,
-    })
-  }
+    function gotView(view){
+      props.dispatch({
+        type: 'UPDATE_GAME_STATE',
+        data: view.game,
+      })
+    }
 
-  channel.on("state_update", game => {
-      channel.push("update_state", game)
-        .receive("ok", gotView.bind(this))
-    });
+    channel.on("state_update", game => {
+        channel.push("update_state", game)
+          .receive("ok", gotView.bind(this))
+      });
 
-
-  return <div>
-    <div className="googleMaps">
-      <CampusMap isMarkerShown />
-    </div>
-    <div className="buttonPanel">
-      { btn_panel }
-    </div>
-    <div className="chatPanel">
-      <div id="chatPage"></div>
-      <div className="chatInput">
-        <form className="form-inline">
-          <div className="form-group" id="chatBox">
-            <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
-            <button id="chatSend" className="btn btn-success btn-sm">Send</button>
-          </div>
-        </form>
+    game = <div>
+      <div className="googleMaps">
+        <CampusMap isMarkerShown />
       </div>
-    </div>
-  </div>;
+      <div className="buttonPanel">
+        { btn_panel }
+      </div>
+      <div className="chatPanel">
+        <div id="chatPage"></div>
+        <div className="chatInput">
+          <form className="form-inline">
+            <div className="form-group" id="chatBox">
+              <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
+              <button id="chatSend" className="btn btn-success btn-sm">Send</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>;
+
+  } else {
+
+    game = <div>Loading Game</div>;
+
+  }
+
+  return game;
 
 }
 

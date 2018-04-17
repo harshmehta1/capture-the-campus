@@ -48,7 +48,7 @@ export default function Lobby(props) {
           <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="6"/>3v3</label>
           <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="8"/>4v4</label><br/>
           <button className="btn btn-success">Create Game</button>
-          <Button className="btn btn-primary" onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Match</Button>
+          <Link to="/game"><Button className="btn btn-primary" onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Match</Button></Link>
         </div>
       </div>
       <div className="col">
