@@ -69,7 +69,7 @@ defmodule CaptureCampus.Game do
     state
   end
 
-  def removePlayer(user_id, state) do
+  def removePlayer(state, user_id) do
     team1 = state.team1
     team2 = state.team2
     if Enum.member?(team1, user_id) do
@@ -80,6 +80,8 @@ defmodule CaptureCampus.Game do
       team2 = List.delete(team2, user_id)
       state = Map.put(state, :team2, team2)
     end
+    IO.inspect("REMOVE")
+    IO.inspect(state)
     state
   end
 

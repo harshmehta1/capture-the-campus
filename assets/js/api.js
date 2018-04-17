@@ -120,11 +120,7 @@ class TheServer {
    });
  }
 
- leaveGame(user_id, game_size, channel)
- {
-   channel.push("deleteUser", {user_id: user_id, game_size: parseInt(game_size)})
-   channel.on("shout", this.set_game.bind(this.game))
- }
+ 
 
 }
 

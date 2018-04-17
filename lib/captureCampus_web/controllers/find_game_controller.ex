@@ -13,6 +13,81 @@ defmodule CaptureCampusWeb.FindGameController do
       rank = 0
     end
     cond do
+      game_size == 2 ->
+        cond do
+          rank in 0..25 ->
+            {players, channelNo} = GamesList.load(14) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            if !Enum.member?(players, user_id) do
+              players = players ++ [user_id]
+            end
+            if length(players) <= game_size do
+              GamesList.save(12, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            else
+              players = [user_id]
+              channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
+              GamesList.save(12, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            end
+          rank in 26-50 ->
+            {players, channelNo} = GamesList.load(24) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            if !Enum.member?(players, user_id) do
+              players = players ++ [user_id]
+            end
+            if length(players) <= game_size do
+              GamesList.save(22, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            else
+              players = [user_id]
+              channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
+              GamesList.save(22, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            end
+          rank in 51-75 ->
+            {players, channelNo} = GamesList.load(34) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            if !Enum.member?(players, user_id) do
+              players = players ++ [user_id]
+            end
+            if length(players) <= game_size do
+              GamesList.save(32, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            else
+              players = [user_id]
+              channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
+              GamesList.save(32, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            end
+          rank in 76-100 ->
+            {players, channelNo} = GamesList.load(44) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+            if !Enum.member?(players, user_id) do
+              players = players ++ [user_id]
+            end
+            if length(players) <= game_size do
+              GamesList.save(42, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            else
+              players = [user_id]
+              channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
+              GamesList.save(42, {players, channelNo})
+              conn
+              |> put_status(:created)
+              |> render("channelNo.json", channel_no: channelNo)
+            end
+        end
       game_size == 4 ->
       cond do
         rank in 0..25 ->

@@ -13,23 +13,13 @@ let joined = false;
 let channel;
 
 
-function joinChannel(props){
-  localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
-  channel.join()
-    .receive("ok", console.log("Joined successfully"))
-    .receive("error", resp => { console.log("Unable to join", resp) });
-    joined=true;
-}
 
 function GamePage(props) {
   console.log(props)
   let btn_panel = <div>
      <button className="btn btn-danger">Attack!</button>
      <button className="btn btn-info" id="defendBtn">Defend</button>
-     <Link to="/" onClick={() => api.leaveGame(props.props.token.user_id, props.props.game.game_size, props.props.channel)}>Leave Game</Link>
- </div>;
-       console.log("GAME PAGE")
-       console.log(props)
+     <Link to="/" onClick={() => leaveGame()}>Leave Game</Link></div>;
 
 // for when ko is added to state
   // if (props.ko){
@@ -37,13 +27,28 @@ function GamePage(props) {
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
+  function joinChannel(){
+    console.log("JOINING")
+    localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
+    channel.join()
+      .receive("ok", resp => { console.log("Joined successfully", resp)})
+      .receive("error", resp => { console.log("Unable to join", resp) });
+    console.log(channel)
+      joined=true;
+  }
+
+  function leaveGame()
+  {
+    channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
+  }
+
   let game = <div></div>;
   if (props.gameToken) {
 
-    channel = socket.channel("games:"+props.gameToken.channel_no,
-    {user_id:props.user.user_id, game_size: props.gameToken.game_size})
 
     if(!joined){
+      channel = socket.channel("games:"+props.gameToken.channel_no,
+      {user_id:props.user.user_id, game_size: props.gameToken.game_size})
       joinChannel(props);
     }
 
@@ -55,6 +60,7 @@ function GamePage(props) {
     }
 
     channel.on("state_update", game => {
+      console.log(channel)
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });

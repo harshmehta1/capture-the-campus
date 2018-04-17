@@ -44,7 +44,8 @@ export default function Lobby(props) {
         <div className="form-group">
           <label htmlFor="new-game">New Game: </label>
           <input type="text" className="form-control" placeholder="Game Name" id="new-game"/>
-          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="4"/>2v2</label>
+          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="2"/>1v1</label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="4"/>2v2</label>
           <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="6"/>3v3</label>
           <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="8"/>4v4</label><br/>
           <button className="btn btn-success">Create Game</button>

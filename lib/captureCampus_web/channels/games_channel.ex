@@ -47,99 +47,128 @@ defmodule CaptureCampusWeb.GamesChannel do
      {:noreply, socket}
    end
   #
-   def handle_in("deleteUser", payload, socket) do
-     game = Game.removePlayer(payload["user_id"], GameBackup.load(socket.assigns[:channel_no]))
+   def handle_in("deleteUser", %{"user_id" => user_id, "game_size" => game_size, "game" => game}, socket) do
+     game = Game.removePlayer(game, user_id)
      GameBackup.save(socket.assigns[:channel_no], game)
-     user = Users.get_user!(payload["user_id"])
+     socket = assign(socket, :game, game)
+
+     user = Users.get_user!(user_id)
      if user.totalGames != 0 do
        rank = div(user.wins, user.totalGames)
      else
        rank = 0
      end
      cond do
-       payload["game_size"] == 4 ->
+       game_size == 2 ->
+         cond do
+          rank in 0..25 ->
+           {players, channelNo} = GamesList.load(14)
+           if Enum.member?(players, user_id) do
+             players = List.delete(players, user_id)
+             GamesList.save(12, {players, channelNo})
+           end
+           rank in 26..50 ->
+            {players, channelNo} = GamesList.load(24)
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
+              GamesList.save(22, {players, channelNo})
+            end
+            rank in 51..75 ->
+            {players, channelNo} = GamesList.load(34)
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
+              GamesList.save(32, {players, channelNo})
+            end
+            rank in 76..100 ->
+             {players, channelNo} = GamesList.load(44)
+             if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
+              GamesList.save(42, {players, channelNo})
+             end
+         end
+       game_size == 4 ->
        cond do
         rank in 0..25 ->
          {players, channelNo} = GamesList.load(14)
-         if Enum.member?(players, payload["user_id"]) do
-           players = List.delete(players, payload["user_id"])
+         if Enum.member?(players, user_id) do
+           players = List.delete(players, user_id)
            GamesList.save(14, {players, channelNo})
          end
          rank in 26..50 ->
           {players, channelNo} = GamesList.load(24)
-          if Enum.member?(players, payload["user_id"]) do
-            players = List.delete(players, payload["user_id"])
+          if Enum.member?(players, user_id) do
+            players = List.delete(players, user_id)
             GamesList.save(24, {players, channelNo})
           end
           rank in 51..75 ->
           {players, channelNo} = GamesList.load(34)
-          if Enum.member?(players, payload["user_id"]) do
-            players = List.delete(players, payload["user_id"])
+          if Enum.member?(players, user_id) do
+            players = List.delete(players, user_id)
             GamesList.save(34, {players, channelNo})
           end
           rank in 76..100 ->
            {players, channelNo} = GamesList.load(44)
-           if Enum.member?(players, payload["user_id"]) do
-            players = List.delete(players, payload["user_id"])
+           if Enum.member?(players, user_id) do
+            players = List.delete(players, user_id)
             GamesList.save(44, {players, channelNo})
            end
        end
-       payload["game_size"] == 6 ->
+       game_size == 6 ->
        cond do
          rank in 0..25 ->
            {players, channelNo} = GamesList.load(16)
-           if Enum.member?(players, payload["user_id"]) do
-             players = List.delete(players, payload["user_id"])
+           if Enum.member?(players, user_id) do
+             players = List.delete(players, user_id)
              GamesList.save(16, {players, channelNo})
            end
          rank in 26..50 ->
            {players, channelNo} = GamesList.load(26)
-           if Enum.member?(players, payload["user_id"]) do
-             players = List.delete(players, payload["user_id"])
+           if Enum.member?(players, user_id) do
+             players = List.delete(players, user_id)
              GamesList.save(26, {players, channelNo})
            end
          rank in 51..75 ->
            {players, channelNo} = GamesList.load(36)
-           if Enum.member?(players, payload["user_id"]) do
-             players = List.delete(players, payload["user_id"])
+           if Enum.member?(players, user_id) do
+             players = List.delete(players, user_id)
              GamesList.save(36, {players, channelNo})
            end
          rank in 76..100 ->
            {players, channelNo} = GamesList.load(46)
-           if Enum.member?(players, payload["user_id"]) do
-             players = List.delete(players, payload["user_id"])
+           if Enum.member?(players, user_id) do
+             players = List.delete(players, user_id)
              GamesList.save(46, {players, channelNo})
            end
         end
-        payload["game_size"] == 8 ->
+        game_size == 8 ->
         cond do
           rank in 0..25 ->
             {players, channelNo} = GamesList.load(18)
-            if Enum.member?(players, payload["user_id"]) do
-              players = List.delete(players, payload["user_id"])
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
               GamesList.save(18, {players, channelNo})
             end
           rank in 26..50 ->
             {players, channelNo} = GamesList.load(28)
-            if Enum.member?(players, payload["user_id"]) do
-              players = List.delete(players, payload["user_id"])
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
               GamesList.save(28, {players, channelNo})
             end
           rank in 51..75 ->
             {players, channelNo} = GamesList.load(38)
-            if Enum.member?(players, payload["user_id"]) do
-              players = List.delete(players, payload["user_id"])
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
               GamesList.save(38, {players, channelNo})
             end
           rank in 76..100 ->
             {players, channelNo} = GamesList.load(48)
-            if Enum.member?(players, payload["user_id"]) do
-              players = List.delete(players, payload["user_id"])
+            if Enum.member?(players, user_id) do
+              players = List.delete(players, user_id)
               GamesList.save(48, {players, channelNo})
             end
         end
      end
-     broadcast socket, "shout", %{"game" => game}
+     broadcast! socket, "state_update", game
      {:noreply, socket}
    end
   #
