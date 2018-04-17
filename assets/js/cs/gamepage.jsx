@@ -4,7 +4,7 @@ import { Button, Form, FormGroup, NavItem, Label, Input } from 'reactstrap';
 import { NavLink } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import api from '../api';
-import Map from './map';
+import CampusMap from './map-campus';
 import socket from '../socket';
 import store from '../store';
 
@@ -30,11 +30,13 @@ function GamePage(props) {
  </div>;
        console.log("GAME PAGE")
        console.log(props)
+
 // for when ko is added to state
   // if (props.ko){
   //   btn_panel = <div><button className="btn">Revive</button></div>
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
+
   channel = socket.channel("games:"+props.gameToken.channel_no,
   {user_id:props.user.user_id, game_size: props.gameToken.game_size})
 

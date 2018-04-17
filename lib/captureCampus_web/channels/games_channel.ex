@@ -5,7 +5,7 @@ defmodule CaptureCampusWeb.GamesChannel do
   alias CaptureCampus.GamesList
   alias CaptureCampus.Users
 
-  def join("games:" <> channel_no, %{"user_id" => user_id. "game_size" => game_size}, socket) do
+  def join("games:" <> channel_no, %{"user_id" => user_id, "game_size" => game_size}, socket) do
     IO.inspect("JOIN")
     game = CaptureCampus.GameBackup.load(channel_no) || Game.new(channel_no, game_size)
     game = Game.add_user(game, user_id)

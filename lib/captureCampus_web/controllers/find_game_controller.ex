@@ -163,20 +163,6 @@ defmodule CaptureCampusWeb.FindGameController do
               |> render("channelNo.json", channel_no: channelNo)
             end
         end
-<<<<<<< HEAD
-        if length(players) <= 2 do
-          GamesList.save(1, {players, channelNo})
-          conn
-          |> put_status(:created)
-          |> render("channelNo.json", channel_no: channelNo)
-        else
-          players = [user_id]
-          channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
-          GamesList.save(1, {players, channelNo})
-          conn
-          |> put_status(:created)
-          |> render("channelNo.json", channel_no: channelNo)
-=======
       game_size == 8 ->
         cond do
           rank in 0..25 ->
@@ -251,7 +237,6 @@ defmodule CaptureCampusWeb.FindGameController do
               |> put_status(:created)
               |> render("channelNo.json", channel_no: channelNo)
             end
->>>>>>> 90030d1cda27e5e7fc130570de8b763c63460b19
         end
     end
   end

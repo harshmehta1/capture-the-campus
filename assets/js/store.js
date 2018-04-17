@@ -18,7 +18,7 @@ let empty_game = {
   team2: [],
   buildings: [],
   channel_no: "",
-  game_size: "",
+  team_size: "",
 }
 
 function game(state = empty_game, action){
@@ -77,7 +77,7 @@ function game(state = empty_game, action)
   switch(action.type)
   {
     case 'UPDATE_GAME_STATE':
-      return action.game;
+      return Object.assign({}, state, action.data);
     default:
       return state;
   }
