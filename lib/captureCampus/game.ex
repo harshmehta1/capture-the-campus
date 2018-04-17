@@ -1,10 +1,10 @@
 defmodule CaptureCampus.Game do
 
-  def new(channel_no) do
+  def new(channel_no, game_size) do
     %{
       team1: [],
       team2: [],
-      # team_size: 0,
+      team_size: game_size,
       channel_no: channel_no,
       buildings: [],
     }
@@ -14,7 +14,7 @@ defmodule CaptureCampus.Game do
     %{
       team1: game.team1,
       team2: game.team2,
-      # team_size: game.team_size,
+      team_size: game.team_size,
       channel_no: game.channel_no,
       buildings: game.buildings,
     }
@@ -24,6 +24,7 @@ defmodule CaptureCampus.Game do
     %{
       team1: Map.get(game, "team1"),
       team2: Map.get(game, "team2"),
+      team_size: Map.get(game, "team_size"),
       channel_no: Map.get(game, "channel_no"),
       buildings: Map.get(game, "buildings"),
     }
@@ -42,11 +43,11 @@ defmodule CaptureCampus.Game do
 
 
     if length(dupCheck) == 0 do
-      if length(team1) < 2 do
+      if length(team1) < div(game.team_size, 2) do
         team1 = team1 ++ [player]
         game = Map.replace!(game, :team1, team1)
       else
-        if length(team2) < 2 do
+        if length(team2) < div(game.team_size, 2) do
           team2 = team2 ++ [player]
           game = Map.replace!(game, :team2, team2)
         end

@@ -65,10 +65,27 @@ class TheServer {
     })
   }
 
-  findMatch(user_id)
+  set_game(game)
+  {
+    store.dispatch({
+      type: 'UPDATE_GAME_STATE',
+      game: game.game,
+    })
+  }
+
+  set_channel(channel)
+  {
+    store.dispatch({
+      type: 'UPDATE_CHANNEL',
+      channel: channel,
+    })
+  }
+
+  findMatch(user_id, game_size)
  {
    let data = {
-       user_id: user_id
+       user_id: user_id,
+       game_size: parseInt(game_size)
    }
    $.ajax("/api/v1/newgame/", {
      method: "post",
@@ -77,17 +94,39 @@ class TheServer {
      data: JSON.stringify(data),
      success: (resp) => {
          console.log(resp.channel_no);
+<<<<<<< HEAD
+
+          let gameData = {
+            channel_no: resp.channel_no,
+            game_size: data.game_size,
+          }
 
           store.dispatch({
               type: 'SET_GAME_TOKEN',
-              game_token: resp.channel_no,
+              game_token: JSON.stringify(gameData),
             })
 
+=======
+         localStorage.setItem("channelNo", resp.channel_no); //caching the channel no for reconnection.
+         let channel = socket.channel("games:"+resp.channel_no, {game_size: data.game_size})
+         channel.join()
+           .receive("ok", console.log("Joined successfully", resp))
+           .receive("error", resp => { console.log("Unable to join", resp) });
+           channel.push("addUser", {user_id: user_id, game_size: parseInt(game_size)}).receive("ok", console.log("Player Added", resp))
+           channel.on("shout", this.set_game.bind(this.game))
+           this.set_channel(channel)
+>>>>>>> 90030d1cda27e5e7fc130570de8b763c63460b19
        },
      error:(resp) => {
        alert("Something went wrong!")
      }
    });
+ }
+
+ leaveGame(user_id, game_size, channel)
+ {
+   channel.push("deleteUser", {user_id: user_id, game_size: parseInt(game_size)})
+   channel.on("shout", this.set_game.bind(this.game))
  }
 
 }
