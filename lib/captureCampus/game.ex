@@ -9,8 +9,13 @@ defmodule CaptureCampus.Game do
       buildings: Enum.take_random(buildingList(), game_size + 1),
       team1Attacks: [],
       team2Attacks: [],
+<<<<<<< HEAD
       status: "Waiting For Players",
       winner: "",
+=======
+      team1BuildingsCaptured: [],
+      team2BuildingsCaptured: [],
+>>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
     }
   end
 
@@ -23,8 +28,13 @@ defmodule CaptureCampus.Game do
       buildings: game.buildings,
       team1Attacks: game.team1Attacks,
       team2Attacks: game.team2Attacks,
+<<<<<<< HEAD
       status: game.status,
       winner: game.winner,
+=======
+      team1BuildingsCaptured: game.team1BuildingsCaptured,
+      team2BuildingsCaptured: game.team2BuildingsCaptured,
+>>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
     }
   end
 
@@ -37,8 +47,13 @@ defmodule CaptureCampus.Game do
       buildings: Map.get(game, "buildings"),
       team1Attacks: Map.get(game, "team1Attacks"),
       team2Attacks: Map.get(game, "team2Attacks"),
+<<<<<<< HEAD
       status: Map.get(game, "status"),
       winner: Map.get(game, "winner"),
+=======
+      team1BuildingsCaptured: Map.get(game, "team1BuildingsCaptured"),
+      team2BuildingsCaptured: Map.get(game, "team2BuildingsCaptured"),
+>>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
     }
   end
 

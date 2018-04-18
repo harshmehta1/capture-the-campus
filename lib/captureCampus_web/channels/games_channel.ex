@@ -38,6 +38,7 @@ defmodule CaptureCampusWeb.GamesChannel do
     game = Game.handleAttack(game, building, team)
     broadcast! socket, "attack_incoming", game
     IO.inspect(game)
+    {:noreply, socket}
   end
 
    def handle_in("deleteUser", %{"user_id" => user_id, "game_size" => game_size, "game" => game}, socket) do

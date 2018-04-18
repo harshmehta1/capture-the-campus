@@ -78,7 +78,7 @@ function GamePage(props) {
         data["buildings"] = buildingList;
         updateGameState(data);
 
-        activateAttackTimer(currTime);
+        activateAttackTimer(currTime, locationFin.lat, locationFin.lng);
 
         channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
 
@@ -93,7 +93,7 @@ function GamePage(props) {
   var attackTimer = 0;
   var atkInterval;
 
-  function activateAttackTimer(d){
+  function activateAttackTimer(d, lat, lng){
       var t = d.getTime() - (new Date()).getTime();
       console.log("TIMER")
       console.log(t)
@@ -101,23 +101,36 @@ function GamePage(props) {
       console.log(tPercent)
       var tSec = tPercent/100;
       attackTimer = 0;
-      atkInterval = setInterval(timerHelper, tPercent);
+      atkInterval = setInterval(function(){timerHelper(lat, lng);}, tPercent);
       // attackTimer = 0;
       // attackPercentage = 0;
       // attacking = false;
   }
 
-  function timerHelper() {
-      attackTimer = attackTimer + 1;
-      if (attackTimer == 100){
-        console.log("CLEAR")
-        clearInterval(atkInterval);
-        attackTimer = 0;
-      } else {
-        $("#attackBar").css("width",attackTimer+"%");
-        $("#attackBar").html(attackTimer+"%");
-        // console.log(attackPercentage)
-      }
+  function timerHelper(lat, lng) {
+      navigator.geolocation.getCurrentPosition(function(pos){
+        var inRange = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, lat, lng) < 90;
+        // console.log(inRange)
+        if(inRange){
+          attackTimer = attackTimer + 1;
+          if (attackTimer == 100){
+            console.log("CLEAR")
+            //building captured
+            clearInterval(atkInterval);
+            attackTimer = 0;
+            $("#attackBar").css("width",attackTimer+"%");
+            $("#attackBar").html(attackTimer+"%");
+          } else {
+            $("#attackBar").css("width",attackTimer+"%");
+            $("#attackBar").html(attackTimer+"%");
+            // console.log(attackPercentage)
+          }
+        } else {
+          clearInterval(atkInterval);
+          //cancel attack
+        }
+      });
+
   }
 
 
