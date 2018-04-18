@@ -38,25 +38,17 @@ function GamePage(props) {
       currLoc.lng = pos.coords.longitude;
 
       let buildingList = props.game.buildings;
-      let enemyTeam;
-      if(currentTeam = 'team1') {
-        enemyTeam = 'team2';
-      }
-      else {
-        enemyTeam = 'team2';
-      }
+      // let enemyTeam;
+      // if(currentTeam = 'team1') {
+      //   enemyTeam = 'team2';
+      // }
+      // else {
+      //   enemyTeam = 'team2';
+      // }
 
       let defendableBuildings = _.filter(buildingList, function(x){
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
-        let underAtt = false;
-        if(x.underAttack) {
-          for(var p in enemyTeam) {
-            if(enemyTeam[p]['user_id'] === x.attacker) {
-              underAtt = true
-            }
-          }
-        }
-        return nearby && underAtt;
+        return nearby && x.underAttack && (x.attacker.team != currentTeam);
       });
 
       if(!defendableBuildings[0]) {
@@ -65,14 +57,25 @@ function GamePage(props) {
       }
       else {
         dBuilding = defendableBuildings[0];
-        const attackerId = dBuilding.attacker;
+        const attackerId = dBuilding.attacker.user_id;
         buildingIndex = buildingList.indexOf(dBuilding);
         dBuilding.underAttack = false;
         dBuilding.attackEnds = "";
-        dBuilding.attacker = undefined;
+        dBuilding.attacker = {};
+        // var enemyPlayer = _.filter(enemyTeam, function(x){
+        //   return x['user_id'] == attackerId;
+        // })[0];
+        let enemyTeam;
+        if (currentTeam == "team1"){
+          enemyTeam = props.game.team2;
+        } else {
+          enemyTeam = props.game.team1;
+        }
+
         var enemyPlayer = _.filter(enemyTeam, function(x){
           return x['user_id'] == attackerId;
         })[0];
+
         let playerIndex = enemyTeam.indexOf(enemyPlayer);
         enemyPlayer.ko = true;
         buildingList[buildingIndex] = dBuilding;
@@ -80,7 +83,12 @@ function GamePage(props) {
 
         let data = {};
         data['buildings'] = buildingList;
-        data['team2'] = enemyTeam
+
+        if(currentTeam == "team1"){
+          data['team2'] = enemyTeam;
+        } else {
+          data['team1'] = enemyTeam;
+        }
         updateGameState(data);
       }
     })
