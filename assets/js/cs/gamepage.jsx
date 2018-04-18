@@ -30,114 +30,60 @@ function GamePage(props) {
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
-  function defend() {
-    console.log("DEFENDING")
-    let currLoc = {}
-    //navigator.geolocation.getCurrentPosition(function(pos) {
-      //currLoc.lat = pos.coords.latitude;
-      //currLoc.lng = pos.coords.longitude;
+  function defend(){
+    console.log("DEFEND")
+    let currLoc = {};
+    navigator.geolocation.getCurrentPosition(function(pos){
+      currLoc.lat = pos.coords.latitude;
+      currLoc.lng = pos.coords.longitude;
 
       let buildingList = props.game.buildings;
-      let enemyTeam = props.game.team2;
+      let enemyTeam;
+      if(currentTeam = 'team1') {
+        enemyTeam = 'team2';
+      }
+      else {
+        enemyTeam = 'team2';
+      }
 
-
-
-      //fake state testing stuff
-      let building = props.game.buildings[1];
-      currLoc.lat = building['lat'];
-      currLoc.lng = building['lng'];
-
-      var currTime2 = new Date();
-      currTime2.setMinutes(currTime2.getMinutes()+1);
-      building.attackEnds = currTime2;
-      building.underAttack = true;
-      building.captured = true // try with false as well
-      building.attacker = 4
-
-      enemyTeam[0] = {'ko': false, 'location': {lat: currLoc.lat, 'lng': currLoc.lng}, 'user_id': 4}
-
-      buildingList[buildingIndex] = locationFin;
-
-      console.log("checkpoint 1")
-      let data2 = {};
-      data2["buildings"] = buildingList;
-      data2["team2"] = enemyTeam;
-      updateGameState(data2);
-      //hopefully that dont ruin things
-     //end
-     console.log("checkpoint 2")
-      var locationDisList = _.filter(buildingList, function(x){
-        console.log("checkpoint 3")
+      let defendableBuildings = _.filter(buildingList, function(x){
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
         let underAtt = false;
-        console.log("checkpoint 4")
         if(x.underAttack) {
-          //im too tired to think of shorthand for this
-          let pId = x.attacker;
-          for(p in enemyTeam) {
-            if(enemyTeam[p]['user_id'] === pId) {
-              underAtt = true;
+          for(var p in enemyTeam) {
+            if(enemyTeam[p]['user_id'] === x.attacker) {
+              underAtt = true
             }
           }
-          console.log("checkpoint 4")
         }
         return nearby && underAtt;
       });
-      console.log("checkpoint 5")
-      var locationFin;
-      var buildingIndex;
-      var defendable = false;
-      console.log('checkpoint 6')
-      //i'd be surprised if this were ever the case
-      if (locationDisList.length > 1){
-        var nearest = 1000;
-        _.map(locationDisList, function(x){
-          console.log("checkpoint 7")
-          var distanceOfThisBuilding = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng);
-          if (distanceOfThisBuilding < nearest){
-            nearest = distanceOfThisBuilding;
-            locationFin = x;
-          }
-          console.log("checkpoint 8")
-        });
-        defendable = true;
-      } else if (locationDisList.length == 1){
-        locationFin = locationDisList[0];
-        defendable = true;
-        console.log("checkpoint 9")
-      } else {
-        alert("There are no nearby buildings to defend!");
+
+      if(!defendableBuildings[0]) {
+        alert("no building nearby to defend")
+        return
       }
-
-      console.log("checkpoint 10")
-
-      if(defendable) {
-        //set building.attacker to none, attackEnds to "", underAttack to false, and userId.ko to TRUE, but first save the attacker's id
-        attackerId = locationFin.attacker
-        buildingIndex = buildingList.indexOf(locationFin)
-        locationFin.underAttack = false;
-        locationFin.attackEnds = "";
-        locationFin.attacker = undefined;
-        console.log("checkpoint 11")
-        //then set the user to ko'd
+      else {
+        dBuilding = defendableBuildings[0];
+        const attackerId = dBuilding.attacker;
+        buildingIndex = buildingList.indexOf(dBuilding);
+        dBuilding.underAttack = false;
+        dBuilding.attackEnds = "";
+        dBuilding.attacker = undefined;
         var enemyPlayer = _.filter(enemyTeam, function(x){
           return x['user_id'] == attackerId;
         })[0];
         let playerIndex = enemyTeam.indexOf(enemyPlayer);
-        enemyPlayer.ko = true
-
-        buildingList[buildingIndex] = locationFin;
+        enemyPlayer.ko = true;
+        buildingList[buildingIndex] = dBuilding;
         enemyTeam[playerIndex] = enemyPlayer;
 
-        console.log('did i at least get here')
         let data = {};
-        data["buildings"] = buildingList;
-        data["team2"] = enemyTeam;
+        data['buildings'] = buildingList;
+        data['team2'] = enemyTeam
         updateGameState(data);
-
-        //channel.push("defend", {buildings: buildingList, game: props.game})
       }
-    //})
+    })
   }
 
   function attack(){
