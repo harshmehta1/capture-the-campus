@@ -38,6 +38,7 @@ defmodule CaptureCampusWeb.GamesChannel do
     game = Game.handleAttack(game, building, team)
     broadcast! socket, "attack_incoming", game
     IO.inspect(game)
+    {:noreply, socket}
   end
 
   # # Channels can be used in a request/response fashion
