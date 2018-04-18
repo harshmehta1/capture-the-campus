@@ -20,7 +20,7 @@ function GamePage(props) {
   console.log(props)
   let btn_panel = <div>
      <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
-     <button className="btn btn-info" id="defendBtn">Defend</button>
+     <button className="btn btn-info" onClick={() => defend()} id="defendBtn">Defend</button>
      <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
 
 // for when ko is added to state
@@ -28,6 +28,79 @@ function GamePage(props) {
   //   btn_panel = <div><button className="btn">Revive</button></div>
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
+
+  function defend() {
+    console.log("DEFENDING")
+    let currLoc = {}
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      currLoc.lat = pos.coords.latitude;
+      currLoc.lng = pos.coords.longitude;
+
+      let buildingList = props.game.buildings;
+      let enemyTeam = props.game.team2;
+
+      var locationDisList = _.filter(buildingList, function(x){
+        const nearby = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng) < 90;
+        let underAttack = false;
+        if(x.underAttack) {
+          //im too tired to think of shorthand for this
+          let pId = x.attacker;
+          for(p in enemyTeam) {
+            if(enemyTeam[p]['user_id'] === pId) {
+              underAttack = true;
+            }
+          }
+        }
+        return nearby && underAttack;
+      });
+
+      var locationFin;
+      var buildingIndex;
+      var defendable = false;
+      //i'd be surprised if this were ever the case
+      if (locationDisList.length > 1){
+        var nearest = 1000;
+        _.map(locationDisList, function(x){
+          var distanceOfThisBuilding = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng);
+          if (distanceOfThisBuilding < nearest){
+            nearest = distanceOfThisBuilding;
+            locationFin = x;
+          }
+        });
+        defendable = true;
+      } else if (locationDisList.length == 1){
+        locationFin = locationDisList[0];
+        defendable = true;
+      } else {
+        alert("There are no nearby buildings to defend!");
+      }
+
+      if(defendable) {
+        //set building.attacker to none, attackEnds to "", underAttack to false, and userId.ko to TRUE, but first save the attacker's id
+        attackerId = locationFin.attacker
+        buildingIndex = buildingList.indexOf(locationFin)
+        locationFin.underAttack = false;
+        locationFin.attackEnds = "";
+        locationFin.attacker = undefined;
+        //then set the user to ko'd
+        var enemyPlayer = _.filter(enemyTeam, function(x){
+          return x['user_id'] == attackerId;
+        })[0];
+        playerIndex = enemyTeam.indexOf(enemyPlayer);
+        enemyPlayer.ko = true
+
+        buildingList[buildingIndex] = locationFin;
+        enemyTeam[playerIndex] = enemyPlayer;
+
+        let data = {};
+        data["buildings"] = buildingList;
+        data["team2"] = enemyTeam;
+        updateGameState(data);
+
+        //channel.push("defend", {buildings: buildingList, game: props.game})
+      }
+    })
+  }
 
   function attack(){
     console.log("ATTACK")
