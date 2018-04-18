@@ -185,6 +185,12 @@ defmodule CaptureCampusWeb.GamesChannel do
   #   {:noreply, socket}
   # end
 
+  # chat functionality
+  def handle_in("sendMsg", payload, socket) do
+    broadcast! socket, "sendMsg", %{"msg" => payload["message"]}
+    {:noreply, socket}
+  end
+
   # Add authorization logic here as required.
   defp authorized?(_payload) do
     true

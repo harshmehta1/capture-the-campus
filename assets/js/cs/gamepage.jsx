@@ -175,6 +175,19 @@ function GamePage(props) {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
   }
 
+  function sendMessage()
+  {
+    channel.push("sendMsg", {message: $('#chatText').val()})
+    channel.on("sendMsg", resp => {displayMessage(resp)})
+  }
+
+  function displayMessage(resp) 
+  {
+   var text = resp.msg + "\n" + $('#chatOutput').html()
+   $("#chatOutput").html(text.replace(/\n/g, "<br />"));
+   $("#chatText").val("");  
+  }
+
   let game = <div></div>;
   if (props.gameToken) {
 
@@ -252,13 +265,10 @@ function GamePage(props) {
       </div>
       <div className="chatPanel">
         <div id="chatPage"></div>
-        <div className="chatInput">
-          <form className="form-inline">
-            <div className="form-group" id="chatBox">
-              <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
-              <button id="chatSend" className="btn btn-success btn-sm">Send</button>
-            </div>
-          </form>
+        <div id="chatOutput"></div>
+        <div id="chatInput">
+            <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
+            <button id="chatSend" className="btn btn-success btn-sm" onClick={() => sendMessage()}>Send</button>
         </div>
       </div>
     </div>;
