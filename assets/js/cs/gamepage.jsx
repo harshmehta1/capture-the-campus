@@ -13,7 +13,7 @@ let joined = false;
 let channel;
 let currPos;
 let attacking = false;
-
+let currentTeam;
 function GamePage(props) {
   let attackPercentage = 0;
 
@@ -70,7 +70,7 @@ function GamePage(props) {
         buildingIndex = buildingList.indexOf(locationFin)
         locationFin.underAttack = true;
         locationFin.attackEnds = currTime;
-        locationFin.attacker = props.user.user_id;
+        locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
         buildingList[buildingIndex] = locationFin;
 
         let data = {};
@@ -79,7 +79,7 @@ function GamePage(props) {
 
         activateAttackTimer(currTime);
 
-        channel.push("attack", {buildings: buildingList, game: props.game})
+        channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
 
 
         console.log(buildingIndex)
@@ -150,9 +150,24 @@ function GamePage(props) {
   function joinChannel(){
     localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
     channel.join()
-      .receive("ok", resp => { console.log("Joined successfully", resp)})
+      .receive("ok", resp => { console.log("Joined successfully"), getCurrentTeam(resp) })
       .receive("error", resp => { console.log("Unable to join", resp) });
       joined=true;
+  }
+
+  function getCurrentTeam(resp){
+    console.log("CURRENT TEAM")
+    var team1 = resp.game.team1;
+    var team2 = resp.game.team2;
+    var isInTeam1 = _.filter(team1, function(x){
+      return x.user_id == props.user.user_id;
+    });
+    if (isInTeam1.length > 0){
+      currentTeam = "team1";
+    } else {
+      currentTeam = "team2";
+    }
+    console.log(currentTeam)
   }
 
   function leaveGame()
@@ -169,12 +184,31 @@ function GamePage(props) {
     // let atkPC = Math.round(parseInt($("#attackBar").css("width").substring(0, $("#attackBar").css("width").length - 2)));
     console.log("ATK PC")
     console.log(attackPercentage)
-      let attackProgress = <div class="progress attack-bar">
-      <div id="attackBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+      let attackProgress = <div className="progress attack-bar">
+      <div id="attackBar" className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
         {attackPercentage}%
       </div>
     </div>;
     // }
+
+    let attackNotifs;
+    if(currentTeam == "team1"){
+      var team2Atks = props.game.team2Attacks;
+      attackNotifs = _.map(team2Atks, function(x){
+        var t = (new Date(x.attackEnds)).getTime() - (new Date()).getTime();
+        var timeLeft = t/1000;
+        return <div><p>TEAM 2 is attacking building {x.name}. You have {timeLeft} seconds to defend the building!</p></div>;
+      });
+    } else {
+      var team1Atks = props.game.team1Attacks;
+      attackNotifs = _.map(team1Atks, function(x){
+        var t = (new Date(x.attackEnds)).getTime() - (new Date()).getTime();
+        var timeLeft = t/1000;
+        return <div><p>TEAM 1 is attacking building {x.name}. You have {timeLeft} seconds to defend the building!</p></div>;
+      });
+    }
+
+    console.log(attackNotifs)
 
 
     if(!joined){
@@ -190,6 +224,12 @@ function GamePage(props) {
       })
     }
 
+    channel.on("attack_incoming", game => {
+      channel.push("update_state", game)
+        .receive("ok", gotView.bind(this))
+    });
+
+
     channel.on("state_update", game => {
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
@@ -200,6 +240,9 @@ function GamePage(props) {
     return <div>
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings}/>
+      </div>
+      <div className="attackNotifications">
+        {attackNotifs}
       </div>
       <div className="attackProgressBar">
         {attackProgress}

@@ -68,7 +68,11 @@ function CamMap(props){
 
   let markerList = _.map(allBuildings, function (x, ii) {
     console.log(x);
-    return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
+    if(x.underAttack){
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} />
+    } else {
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
+    }
   });
 
   // console.log(markerList)

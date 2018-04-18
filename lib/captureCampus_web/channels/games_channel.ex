@@ -34,6 +34,12 @@ defmodule CaptureCampusWeb.GamesChannel do
   end
 
 
+  def handle_in("attack", %{"building" => building, "game" => game, "attackingTeam" => team}, socket) do
+    game = Game.handleAttack(game, building, team)
+    broadcast! socket, "attack_incoming", game
+    IO.inspect(game)
+  end
+
   # # Channels can be used in a request/response fashion
   # # by sending replies to requests from the client
   # def handle_in("ping", payload, socket) do

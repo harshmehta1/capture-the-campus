@@ -7,6 +7,8 @@ defmodule CaptureCampus.Game do
       team_size: game_size,
       channel_no: channel_no,
       buildings: Enum.take_random(buildingList(), game_size + 1),
+      team1Attacks: [],
+      team2Attacks: [],
     }
   end
 
@@ -17,6 +19,8 @@ defmodule CaptureCampus.Game do
       team_size: game.team_size,
       channel_no: game.channel_no,
       buildings: game.buildings,
+      team1Attacks: game.team1Attacks,
+      team2Attacks: game.team2Attacks,
     }
   end
 
@@ -27,6 +31,8 @@ defmodule CaptureCampus.Game do
       team_size: Map.get(game, "team_size"),
       channel_no: Map.get(game, "channel_no"),
       buildings: Map.get(game, "buildings"),
+      team1Attacks: Map.get(game, "team1Attacks"),
+      team2Attacks: Map.get(game, "team2Attacks"),
     }
   end
 
@@ -43,7 +49,26 @@ defmodule CaptureCampus.Game do
       %{:name => "East Village", :lat => 42.340437, :lng => -71.086879, :captured => false, :underAttack => false, :attacker => %{}, :attackEnds => "" }]
   end
 
-
+  def handleAttack(game, building, team) do
+    if (team == "team1") do
+      currTeam1Attacks = Map.get(game, "team1Attacks")
+      if currTeam1Attacks != nil do
+        newTeam1Attacks = currTeam1Attacks ++ [building]
+      else
+        newTeam1Attacks = [building]
+      end
+      game = Map.replace!(game, "team1Attacks", newTeam1Attacks)
+    else
+      currTeam2Attacks = Map.get(game, "team2Attacks")
+      if currTeam2Attacks != nil do
+        newTeam2Attacks = currTeam2Attacks ++ [building]
+      else
+        newTeam2Attacks = [building]
+      end
+      game = Map.replace!(game, "team2Attacks", newTeam2Attacks)
+    end
+    game
+  end
 
   def add_user(game, user_id) do
     IO.inspect(user_id)
