@@ -1,7 +1,5 @@
 # CaptureCampus
 
-Note - make sure to add in assets the linux command upon first pull: npm install --save react-google-maps
-
 To start your Phoenix server:
 
   * Install dependencies with `mix deps.get`

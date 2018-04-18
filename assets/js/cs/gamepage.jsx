@@ -19,6 +19,7 @@ function GamePage(props) {
 
   console.log(props)
   let btn_panel = <div>
+     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
      <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
      <button className="btn btn-info" id="defendBtn">Defend</button>
      <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
@@ -183,7 +184,7 @@ function GamePage(props) {
 
   function displayMessage(resp) 
   {
-   var text = resp.msg + "\n" + $('#chatOutput').html()
+   var text = props.user.user_id + ": " + resp.msg + "\n" + $('#chatOutput').html()
    $("#chatOutput").html(text.replace(/\n/g, "<br />"));
    $("#chatText").val("");  
   }
@@ -263,15 +264,27 @@ function GamePage(props) {
       <div className="buttonPanel">
         { btn_panel }
       </div>
-      <div className="chatPanel">
-        <div id="chatPage"></div>
-        <div id="chatOutput"></div>
-        <div id="chatInput">
-            <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
-            <button id="chatSend" className="btn btn-success btn-sm" onClick={() => sendMessage()}>Send</button>
-        </div>
-      </div>
-    </div>;
+
+     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+       <div class="modal-dialog" role="document">
+         <div class="modal-content">
+           <div class="modal-header">
+             <h5 class="modal-title" id="exampleModalLongTitle">Chat Box</h5>
+             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+               <span aria-hidden="true">&times;</span>
+             </button>
+           </div>
+           <div class="modal-body" id="chatOutput">
+           </div>
+           <div class="modal-footer" id="chatInput">
+              <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
+             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="button" class="btn btn-primary" onClick={() => sendMessage()}>Send</button>
+           </div>
+         </div>
+       </div>
+     </div>
+  </div>;
 
   } else {
 
