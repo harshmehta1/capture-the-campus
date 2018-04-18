@@ -50,15 +50,15 @@ function GamePage(props) {
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
         return nearby && x.underAttack && (x.attacker.team != currentTeam);
       });
-
+      console.log(defendableBuildings)
       if(!defendableBuildings[0]) {
         alert("no building nearby to defend")
         return
       }
       else {
-        dBuilding = defendableBuildings[0];
+        var dBuilding = defendableBuildings[0];
         const attackerId = dBuilding.attacker.user_id;
-        buildingIndex = buildingList.indexOf(dBuilding);
+        var buildingIndex = buildingList.indexOf(dBuilding);
         dBuilding.underAttack = false;
         dBuilding.attackEnds = "";
         dBuilding.attacker = {};
