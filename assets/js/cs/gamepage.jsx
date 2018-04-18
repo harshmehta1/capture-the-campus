@@ -14,21 +14,62 @@ let channel;
 let currPos;
 let attacking = false;
 let currentTeam;
+let ko = true;
+
 function GamePage(props) {
   let attackPercentage = 0;
 
   console.log(props)
-  let btn_panel = <div>
-     <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-     <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
-     <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-     <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
 
-// for when ko is added to state
-  // if (props.ko){
-  //   btn_panel = <div><button className="btn">Revive</button></div>
-  // }
-  // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
+  let btn_panel = ko ?
+      <div>
+        <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
+        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+        <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link>
+      </div> : 
+      <div>
+       <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+       <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
+       <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
+       <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link>
+      </div>;
+
+  function revive() {
+    console.log("REVIVE")
+    let currLoc = {};
+    if(!ko) {
+      alert("user is already alive")
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(function(pos) {
+      currLoc.lat = pos.coords.latitude;
+      currLoc.lng = pos.coords.longitude;
+
+      let buildingList = props.game.buildings;
+      //let snell = props.game.reviveBuilding;
+      const snell = {lat: 42.338396, lng: -71.088071}
+      if(!(distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, snell.lat, snell.lng) < 90)) {
+        alert("not close enough to snell")
+        return;
+      }
+      else {
+        //get currentteam
+        let team = props.game[currentTeam];
+        let player = _.filter(team, function(x) {
+          return x['user_id'] == props.user.user_id;
+        })[0];
+        let playerIndex = team.indexOf(player)
+        player.ko = false;
+        //set global ko to false
+        ko = false
+        team[playerIndex] = player;
+        let data = {};
+        data[currentTeam] = team;
+        updateGameState(data);
+      }
+    })
+  }
+
 
   function defend(){
     console.log("DEFEND")
@@ -50,15 +91,15 @@ function GamePage(props) {
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
         return nearby && x.underAttack && (x.attacker.team != currentTeam);
       });
-      console.log(defendableBuildings)
+
       if(!defendableBuildings[0]) {
         alert("no building nearby to defend")
         return
       }
       else {
-        var dBuilding = defendableBuildings[0];
+        dBuilding = defendableBuildings[0];
         const attackerId = dBuilding.attacker.user_id;
-        var buildingIndex = buildingList.indexOf(dBuilding);
+        buildingIndex = buildingList.indexOf(dBuilding);
         dBuilding.underAttack = false;
         dBuilding.attackEnds = "";
         dBuilding.attacker = {};
