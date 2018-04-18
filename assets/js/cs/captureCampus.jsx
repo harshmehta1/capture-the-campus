@@ -18,6 +18,7 @@ export default function captureCampus_init(store){
 let CaptureCampus = connect((state) => state)((props) => {
 
   //Authentication Validation
+  
   let isLoggedIn;
   let isInGame;
   let gameToken;

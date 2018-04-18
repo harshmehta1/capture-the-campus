@@ -12,12 +12,14 @@ import store from '../store';
 let joined = false;
 let channel;
 let currPos;
-
+let attacking = false;
 
 function GamePage(props) {
+  let attackPercentage = 0;
+
   console.log(props)
   let btn_panel = <div>
-     <button className="btn btn-danger">Attack!</button>
+     <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
      <button className="btn btn-info" id="defendBtn">Defend</button>
      <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
 
@@ -27,15 +29,125 @@ function GamePage(props) {
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
 
+  function attack(){
+    console.log("ATTACK")
+    let currLoc = {};
+    navigator.geolocation.getCurrentPosition(function(pos){
+      currLoc.lat = pos.coords.latitude;
+      currLoc.lng = pos.coords.longitude;
+
+    let buildingList = props.game.buildings;
+
+      var locationDisList = _.filter(buildingList, function(x){
+        console.log(x.name)
+        return distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng) < 90;
+      });
+
+      var locationFin;
+      var buildingIndex;
+      var attackable = false;
+      if (locationDisList.length > 1){
+        var nearest = 1000;
+        _.map(locationDisList, function(x){
+          var distanceOfThisBuilding = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng);
+          if (distanceOfThisBuilding < nearest){
+            nearest = distanceOfThisBuilding;
+            locationFin = x;
+          }
+        });
+        attackable = true;
+      } else if (locationDisList.length == 1){
+        locationFin = locationDisList[0];
+        attackable = true;
+      } else {
+        alert("You are not close enough to any building to attack it!");
+      }
+
+      if(attackable){
+        var currTime = new Date();
+        currTime.setMinutes(currTime.getMinutes()+1);
+
+        buildingIndex = buildingList.indexOf(locationFin)
+        locationFin.underAttack = true;
+        locationFin.attackEnds = currTime;
+        locationFin.attacker = props.user.user_id;
+        buildingList[buildingIndex] = locationFin;
+
+        let data = {};
+        data["buildings"] = buildingList;
+        updateGameState(data);
+
+        activateAttackTimer(currTime);
+
+        channel.push("attack", {buildings: buildingList, game: props.game})
+
+
+        console.log(buildingIndex)
+        console.log(locationFin)
+        attacking = true;
+
+      }
+    })
+  }
+  var attackTimer = 0;
+  var atkInterval;
+
+  function activateAttackTimer(d){
+      var t = d.getTime() - (new Date()).getTime();
+      console.log("TIMER")
+      console.log(t)
+      var tPercent = t/100;
+      console.log(tPercent)
+      var tSec = tPercent/100;
+      attackTimer = 0;
+      atkInterval = setInterval(timerHelper, tPercent);
+      // attackTimer = 0;
+      // attackPercentage = 0;
+      // attacking = false;
+  }
+
+  function timerHelper() {
+      attackTimer = attackTimer + 1;
+      if (attackTimer == 100){
+        console.log("CLEAR")
+        clearInterval(atkInterval);
+        attackTimer = 0;
+      } else {
+        $("#attackBar").css("width",attackTimer+"%");
+        $("#attackBar").html(attackTimer+"%");
+        // console.log(attackPercentage)
+      }
+  }
+
+
+  function updateGameState(data){
+    props.dispatch({
+      type: 'UPDATE_GAME_STATE',
+      data: data,
+    })
+  }
+
+  function degreesToRadians(degrees) {
+    return degrees * Math.PI / 180;
+  }
+
+  function distanceInKmBetweenEarthCoordinates(lat1, lon1, lat2, lon2) {
+    var earthRadiusKm = 6371;
+    var earthRadiusMeters = earthRadiusKm * 1000;
+
+    var dLat = degreesToRadians(lat2-lat1);
+    var dLon = degreesToRadians(lon2-lon1);
+
+    lat1 = degreesToRadians(lat1);
+    lat2 = degreesToRadians(lat2);
+
+    var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+            Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2);
+    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+    return earthRadiusMeters * c;
+  }
+
   function joinChannel(){
-    // navigator.geolocation.watchPosition(function(pos){
-    //   currPos = {
-    //     lat: pos.coords.latitude,
-    //     lng: pos.coords.longitude,
-    //   }
-    //   console.log(pos.coords.latitude)
-    //   console.log(pos.coords.longitude)
-    // });
     localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully", resp)})
@@ -50,6 +162,19 @@ function GamePage(props) {
 
   let game = <div></div>;
   if (props.gameToken) {
+
+    // let attackProgress = <div></div>;
+    // if(attacking){
+
+    // let atkPC = Math.round(parseInt($("#attackBar").css("width").substring(0, $("#attackBar").css("width").length - 2)));
+    console.log("ATK PC")
+    console.log(attackPercentage)
+      let attackProgress = <div class="progress attack-bar">
+      <div id="attackBar" class="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+        {attackPercentage}%
+      </div>
+    </div>;
+    // }
 
 
     if(!joined){
@@ -75,6 +200,9 @@ function GamePage(props) {
     return <div>
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings}/>
+      </div>
+      <div className="attackProgressBar">
+        {attackProgress}
       </div>
       <div className="buttonPanel">
         { btn_panel }

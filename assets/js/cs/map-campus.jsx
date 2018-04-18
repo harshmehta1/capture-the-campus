@@ -49,9 +49,11 @@ function CamMap(props){
 
   if(props.coords){
   console.log("CAMMAP")
-  console.log(props)
+  // console.log(props)
   let allBuildings = props.buildings;
-  let posn = {lat: props.coords.latitude, lng: props.coords.longitude};
+  var lati = parseFloat(props.coords.latitude)
+  var lngi = parseFloat(props.coords.longitude)
+  let posn = {lat: lati, lng: lngi};
   showMarker = true;
     // if(props.isGeolocationAvailable && props.isGeolocationEnabled){
     //   if(props.coords){
@@ -69,13 +71,13 @@ function CamMap(props){
     return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
   });
 
-  console.log(markerList)
+  // console.log(markerList)
 
 
   return  <CampusMap isMarkerShown={showMarker} markerList={markerList} posn={posn} />;
 
   } else {
-    return <div>Locating you...</div>
+    return <div id="loading"><img src="https://i.redd.it/ounq1mw5kdxy.gif" height="50%"/><br/>Locating you...</div>
   }
 
 

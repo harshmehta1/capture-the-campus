@@ -22,6 +22,4 @@ import api from './api';
 
 // import socket from "./socket"
 import captureCampus_init from "./cs/captureCampus";
-$(function(){
-  captureCampus_init(store)
-});
+$(captureCampus_init(store));
