@@ -46,12 +46,12 @@ defmodule CaptureCampusWeb.GamesChannel do
   #   {:reply, {:ok, payload}, socket}
   # end
   #
-   def handle_in("addUser", payload, socket) do
-     game = Game.addPlayer(payload["user_id"], payload["game_size"], GameBackup.load(socket.assigns[:channel_no]))
-     GameBackup.save(socket.assigns[:channel_no], game)
-     broadcast socket, "shout", %{"game" => game}
-     {:noreply, socket}
-   end
+   #def handle_in("addUser", payload, socket) do
+    # game = Game.addPlayer(payload["user_id"], payload["game_size"], GameBackup.load(socket.assigns[:channel_no]))
+    # GameBackup.save(socket.assigns[:channel_no], game)
+    # broadcast socket, "shout", %{"game" => game}
+    # {:noreply, socket}
+  # end
   #
    def handle_in("deleteUser", %{"user_id" => user_id, "game_size" => game_size, "game" => game}, socket) do
      game = Game.removePlayer(game, user_id)
@@ -98,6 +98,7 @@ defmodule CaptureCampusWeb.GamesChannel do
          {players, channelNo} = GamesList.load(14)
          if Enum.member?(players, user_id) do
            players = List.delete(players, user_id)
+             IO.inspect("Players After Delete#{players}")
            GamesList.save(14, {players, channelNo})
          end
          rank in 26..50 ->

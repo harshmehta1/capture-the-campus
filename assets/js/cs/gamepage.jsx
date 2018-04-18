@@ -174,6 +174,7 @@ function GamePage(props) {
   function leaveGame()
   {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
+    joined=false;
   }
 
   function sendMessage()
@@ -183,11 +184,11 @@ function GamePage(props) {
   }
 
 
-  function displayMessage(resp) 
-  { 
+  function displayMessage(resp)
+  {
    var text = resp.msg + "\n" + $('#chatOutput').html()
    $("#chatOutput").html(text.replace(/\n/g, "<br />"));
-   $("#chatText").val("");  
+   $("#chatText").val("");
   }
 
   let game = <div></div>;
