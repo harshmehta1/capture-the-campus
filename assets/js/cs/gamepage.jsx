@@ -178,13 +178,14 @@ function GamePage(props) {
 
   function sendMessage()
   {
-    channel.push("sendMsg", {message: $('#chatText').val()})
+    channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val()})
     channel.on("sendMsg", resp => {displayMessage(resp)})
   }
 
+
   function displayMessage(resp) 
-  {
-   var text = props.user.user_id + ": " + resp.msg + "\n" + $('#chatOutput').html()
+  { 
+   var text = resp.msg + "\n" + $('#chatOutput').html()
    $("#chatOutput").html(text.replace(/\n/g, "<br />"));
    $("#chatText").val("");  
   }
