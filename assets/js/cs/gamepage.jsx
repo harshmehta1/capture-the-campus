@@ -22,7 +22,7 @@ function GamePage(props) {
      <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
      <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
      <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-     <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
+     <button onClick={() => leaveGame()} className="btn btn-default">Leave Game</button></div>;
 
 // for when ko is added to state
   // if (props.ko){
@@ -303,6 +303,7 @@ function GamePage(props) {
   {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
     joined=false;
+    window.location = "/";
   }
 
   function sendMessage()
