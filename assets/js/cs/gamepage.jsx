@@ -19,9 +19,9 @@ function GamePage(props) {
 
   console.log(props)
   let btn_panel = <div>
-     <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+     <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
      <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
-     <button className="btn btn-info" id="defendBtn">Defend</button>
+     <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
      <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link></div>;
 
 // for when ko is added to state
@@ -29,6 +29,70 @@ function GamePage(props) {
   //   btn_panel = <div><button className="btn">Revive</button></div>
   // }
   // channel = socket.channel("games:"+props.gameToken, {"user_id":props.user.user_id});
+
+  function defend(){
+    console.log("DEFEND")
+    let currLoc = {};
+    navigator.geolocation.getCurrentPosition(function(pos){
+      currLoc.lat = pos.coords.latitude;
+      currLoc.lng = pos.coords.longitude;
+
+      let buildingList = props.game.buildings;
+      // let enemyTeam;
+      // if(currentTeam = 'team1') {
+      //   enemyTeam = 'team2';
+      // }
+      // else {
+      //   enemyTeam = 'team2';
+      // }
+
+      let defendableBuildings = _.filter(buildingList, function(x){
+        const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
+        return nearby && x.underAttack && (x.attacker.team != currentTeam);
+      });
+      console.log(defendableBuildings)
+      if(!defendableBuildings[0]) {
+        alert("no building nearby to defend")
+        return
+      }
+      else {
+        var dBuilding = defendableBuildings[0];
+        const attackerId = dBuilding.attacker.user_id;
+        var buildingIndex = buildingList.indexOf(dBuilding);
+        dBuilding.underAttack = false;
+        dBuilding.attackEnds = "";
+        dBuilding.attacker = {};
+        // var enemyPlayer = _.filter(enemyTeam, function(x){
+        //   return x['user_id'] == attackerId;
+        // })[0];
+        let enemyTeam;
+        if (currentTeam == "team1"){
+          enemyTeam = props.game.team2;
+        } else {
+          enemyTeam = props.game.team1;
+        }
+
+        var enemyPlayer = _.filter(enemyTeam, function(x){
+          return x['user_id'] == attackerId;
+        })[0];
+
+        let playerIndex = enemyTeam.indexOf(enemyPlayer);
+        enemyPlayer.ko = true;
+        buildingList[buildingIndex] = dBuilding;
+        enemyTeam[playerIndex] = enemyPlayer;
+
+        let data = {};
+        data['buildings'] = buildingList;
+
+        if(currentTeam == "team1"){
+          data['team2'] = enemyTeam;
+        } else {
+          data['team1'] = enemyTeam;
+        }
+        updateGameState(data);
+      }
+    })
+  }
 
   function attack(){
     console.log("ATTACK")
@@ -41,7 +105,8 @@ function GamePage(props) {
 
       var locationDisList = _.filter(buildingList, function(x){
         console.log(x.name)
-        return distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng) < 90;
+        console.log(x.lat, x.lng)
+        return distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
       });
 
       var locationFin;
@@ -50,7 +115,7 @@ function GamePage(props) {
       if (locationDisList.length > 1){
         var nearest = 1000;
         _.map(locationDisList, function(x){
-          var distanceOfThisBuilding = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, x.lat, x.lng);
+          var distanceOfThisBuilding = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng);
           if (distanceOfThisBuilding < nearest){
             nearest = distanceOfThisBuilding;
             locationFin = x;
@@ -192,13 +257,14 @@ function GamePage(props) {
 
   function sendMessage()
   {
+    console.log("sending sendMessage")
     channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val()})
-    channel.on("sendMsg", resp => {displayMessage(resp)})
   }
 
 
   function displayMessage(resp)
   {
+    console.log("displaying message")
    var text = resp.msg + "\n" + $('#chatOutput').html()
    $("#chatOutput").html(text.replace(/\n/g, "<br />"));
    $("#chatText").val("");
@@ -258,6 +324,11 @@ function GamePage(props) {
         .receive("ok", gotView.bind(this))
     });
 
+    channel.on("displayMsg", resp => {
+      console.log("message being sent?")
+      displayMessage(resp)
+    })
+
 
     channel.on("state_update", game => {
         if(game.winner != "")
@@ -269,6 +340,8 @@ function GamePage(props) {
       });
 
       console.log(props)
+
+
 
     return <div>
       <div className="googleMaps">
