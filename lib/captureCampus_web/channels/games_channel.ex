@@ -188,7 +188,7 @@ defmodule CaptureCampusWeb.GamesChannel do
   def handle_in("sendMsg", payload, socket) do
     IO.inspect payload
     IO.inspect socket
-    broadcast! socket, "displayMsg", %{"msg" => payload["message"]}
+    broadcast! socket, "sendMsg", %{"msg" => payload["message"]}
     {:noreply, socket}
   end
 

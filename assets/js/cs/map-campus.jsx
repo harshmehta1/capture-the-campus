@@ -74,7 +74,7 @@ function CamMap(props){
     if(x.captured && (x.attacker.team == "team1")){
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} icon={"/images/greenflag.png"}/>
     }
-    if(x.underAttack && (x.attacker.team == "team2") (x.captured == false)){
+    if(x.underAttack && (x.attacker.team == "team2") && (x.captured == false)){
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} icon={"/images/redflag.png"}/>
     }  
     if(x.captured && (x.attacker.team == "team2")){

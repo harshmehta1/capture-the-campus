@@ -374,7 +374,6 @@ function GamePage(props) {
 
   function sendMessage()
   {
-    console.log("sending sendMessage")
     channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val()})
   }
 
@@ -436,15 +435,12 @@ function GamePage(props) {
       })
     }
 
+    channel.on("sendMsg", resp => {displayMessage(resp)[0]});
+
     channel.on("attack_incoming", game => {
       channel.push("update_state", game)
         .receive("ok", gotView.bind(this))
     });
-
-    channel.on("displayMsg", resp => {
-      console.log("message being sent?")
-      displayMessage(resp)
-    })
 
     channel.on("player_kod", resp => {
       console.log("KOOOO!!!")
@@ -469,7 +465,6 @@ function GamePage(props) {
           .receive("ok", gotView.bind(this))
       });
 
-    channel.on("sendMsg", resp => {displayMessage(resp)[0]});
 
       console.log(props)
 
