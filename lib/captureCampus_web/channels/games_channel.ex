@@ -29,6 +29,11 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:noreply, socket}
   end
 
+  def handle_in("ko", payload, socket) do
+    broadcast! socket, "player_kod", payload
+    {:noreply, socket}
+  end
+
   def handle_in("update_state", game, socket) do
     IO.inspect("broadcast received")
     IO.inspect(game)
