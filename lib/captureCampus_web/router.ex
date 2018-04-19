@@ -28,6 +28,7 @@ defmodule CaptureCampusWeb.Router do
     resources "/users", UserController, except: [:new, :edit]
     post "/token", TokenController, :create
     post "/newgame", FindGameController, :findGame
+    post "/unrankedgame", FindGameController, :unrankedGame
   end
 
   # Other scopes may use custom stacks.

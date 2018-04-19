@@ -77,7 +77,8 @@ class TheServer {
  {
    let data = {
        user_id: user_id,
-       game_size: parseInt(game_size)
+       game_size: parseInt(game_size),
+       is_ranked: true
    }
    $.ajax("/api/v1/newgame/", {
      method: "post",
@@ -90,6 +91,7 @@ class TheServer {
           let gameData = {
             channel_no: resp.channel_no,
             game_size: data.game_size,
+            is_ranked: data.is_ranked
           }
 
           store.dispatch({
@@ -102,6 +104,38 @@ class TheServer {
      }
    });
  }
+
+ findunrankedMatch(user_id, game_size)
+{
+  let data = {
+      user_id: user_id,
+      game_size: parseInt(game_size),
+      is_ranked: false
+  }
+  $.ajax("/api/v1/unrankedgame/", {
+    method: "post",
+    dataType: "json",
+    contentType: "application/json; charset=UTF-8",
+    data: JSON.stringify(data),
+    success: (resp) => {
+        console.log(resp.channel_no);
+
+         let gameData = {
+           channel_no: resp.channel_no,
+           game_size: data.game_size,
+           is_ranked: data.is_ranked
+         }
+
+         store.dispatch({
+             type: 'SET_GAME_TOKEN',
+             game_token: gameData,
+           })
+      },
+    error:(resp) => {
+      alert("Please select a gameplay!")
+    }
+  });
+}
 
 }
 

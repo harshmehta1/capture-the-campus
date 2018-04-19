@@ -1,7 +1,7 @@
 defmodule CaptureCampus.Game do
   alias CaptureCampus.Users
 
-  def new(channel_no, game_size) do
+  def new(channel_no, game_size, is_ranked) do
     %{
       team1: [],
       team2: [],
@@ -14,6 +14,7 @@ defmodule CaptureCampus.Game do
       team2Score: 0,
       status: "Waiting For Players",
       winner: "",
+      is_ranked: is_ranked
     }
   end
 
@@ -30,7 +31,7 @@ defmodule CaptureCampus.Game do
       team2Score: game.team2Score,
       status: game.status,
       winner: game.winner,
-
+      is_ranked: game.is_ranked
     }
   end
 
@@ -47,6 +48,7 @@ defmodule CaptureCampus.Game do
       team2Score: Map.get(game, "team2Score"),
       status: Map.get(game, "status"),
       winner: Map.get(game, "winner"),
+      is_ranked: Map.get(game, "is_ranked"),
     }
   end
 
@@ -303,12 +305,12 @@ defmodule CaptureCampus.Game do
   def add_user(game, user_id) do
     IO.inspect(user_id)
     IO.inspect(game)
-    team1 = Map.get(game, :team1)
-    team2 = Map.get(game, :team2)
+    team1 = game.team1
+    team2 = game.team2
     location = %{:lat => 0, :lng => 0}
     player = %{:user_id => user_id, :ko => false, :location => location}
 
-    allPlayers = team1 ++ team2 || []
+    allPlayers = team1 ++ team2
     dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
 
 
@@ -324,7 +326,7 @@ defmodule CaptureCampus.Game do
       end
     end
     if (length(team1) + length(team2)) == game.team_size do
-      game = Map.put(game, "status", "start")
+      game = Map.put(game, :status, "start")
     end
     game
   end

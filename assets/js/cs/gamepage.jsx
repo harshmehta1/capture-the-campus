@@ -351,7 +351,7 @@ function GamePage(props) {
 
     if(!joined){
       channel = socket.channel("games:"+props.gameToken.channel_no,
-      {user_id:props.user.user_id, game_size: props.gameToken.game_size})
+      {user_id:props.user.user_id, game_size: props.gameToken.game_size, is_ranked: props.gameToken.is_ranked})
       joinChannel(props);
     }
 
