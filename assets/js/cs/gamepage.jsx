@@ -199,6 +199,9 @@ function GamePage(props) {
       }
 
       if(attackable){
+        if(locationFin.captured){
+          alert("You cannot capture that building!");
+        } else {
         var currTime = new Date();
         currTime.setMinutes(currTime.getMinutes()+1);
 
@@ -220,7 +223,7 @@ function GamePage(props) {
         console.log(buildingIndex)
         console.log(locationFin)
         attacking = true;
-
+      }
       }
     })
   }
