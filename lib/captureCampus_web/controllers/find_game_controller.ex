@@ -336,4 +336,23 @@ defmodule CaptureCampusWeb.FindGameController do
         end
     end
   end
+
+  def unrankedGame(conn, %{"user_id" => user_id, "game_size" => game_size}) do
+    {players, channel_no} = GamesList.load(0) || {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))}
+    if !Enum.member?(players, user_id) do
+      players = players ++ [user_id]
+    end
+    if length(players) == game_size do
+      GamesList.save(0, {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))})
+      conn
+      |> put_status(:created)
+      |> render("channelNo.json", channel_no: channel_no)
+    else
+      players = [user_id]
+      GamesList.save(0, {players, channel_no})
+      conn
+      |> put_status(:created)
+      |> render("channelNo.json", channel_no: channel_no)
+    end
+  end
 end

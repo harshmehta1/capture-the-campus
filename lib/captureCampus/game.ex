@@ -1,7 +1,7 @@
 defmodule CaptureCampus.Game do
   alias CaptureCampus.Users
 
-  def new(channel_no, game_size) do
+  def new(channel_no, game_size, is_ranked) do
     %{
       team1: [],
       team2: [],
@@ -14,6 +14,7 @@ defmodule CaptureCampus.Game do
       team2Score: 0,
       status: "Waiting For Players",
       winner: "",
+      is_ranked: is_ranked
     }
   end
 
@@ -30,7 +31,7 @@ defmodule CaptureCampus.Game do
       team2Score: game.team2Score,
       status: game.status,
       winner: game.winner,
-
+      is_ranked: game.is_ranked
     }
   end
 
@@ -47,6 +48,7 @@ defmodule CaptureCampus.Game do
       team2Score: Map.get(game, "team2Score"),
       status: Map.get(game, "status"),
       winner: Map.get(game, "winner"),
+      is_ranked: Map.get(game, "is_ranked"),
     }
   end
 
@@ -64,7 +66,17 @@ defmodule CaptureCampus.Game do
   end
 
   def revivePlayer(game, user_id, team) do
-
+    # let team = props.game[currentTeam];
+    # let player = _.filter(team, function(x) {
+    #   return x['user_id'] == props.user.user_id;
+    # })[0];
+    # let playerIndex = team.indexOf(player)
+    # player.ko = false;
+    # //set global ko to false
+    # ko = false
+    # team[playerIndex] = player;
+    # let data = {};
+    # data[currentTeam] = team;
     if team == "team1" do
       myTeam = Map.get(game, "team1")
       thisPlayer = Enum.find(myTeam, fn(x) -> Map.get(x, "user_id")==user_id end)
@@ -84,7 +96,38 @@ defmodule CaptureCampus.Game do
   end
 
   def defendBuilding(game, building, team) do
-
+    # const attackerId = dBuilding.attacker.user_id;
+    # var buildingIndex = buildingList.indexOf(dBuilding);
+    # dBuilding.underAttack = false;
+    # dBuilding.attackEnds = "";
+    # dBuilding.attacker = {};
+    # // var enemyPlayer = _.filter(enemyTeam, function(x){
+    # //   return x['user_id'] == attackerId;
+    # // })[0];
+    # let enemyTeam;
+    # if (currentTeam == "team1"){
+    #   enemyTeam = props.game.team2;
+    # } else {
+    #   enemyTeam = props.game.team1;
+    # }
+    #
+    # var enemyPlayer = _.filter(enemyTeam, function(x){
+    #   return x['user_id'] == attackerId;
+    # })[0];
+    #
+    # let playerIndex = enemyTeam.indexOf(enemyPlayer);
+    # enemyPlayer.ko = true;
+    # buildingList[buildingIndex] = dBuilding;
+    # enemyTeam[playerIndex] = enemyPlayer;
+    #
+    # let data = {};
+    # data['buildings'] = buildingList;
+    #
+    # if(currentTeam == "team1"){
+    #   data['team2'] = enemyTeam;
+    # } else {
+    #   data['team1'] = enemyTeam;
+    # }
     attacker = Map.get(building, "attacker")
     userToKO = Map.get(attacker, "user_id")
 
@@ -122,6 +165,15 @@ defmodule CaptureCampus.Game do
 
   def handleAttack(game, building, team, user_id, currTime) do
 
+    # buildingIndex = buildingList.indexOf(locationFin)
+    # locationFin.underAttack = true;
+    # locationFin.attackEnds = currTime;
+    # locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
+    # buildingList[buildingIndex] = locationFin;
+    #
+    # let data = {};
+    # data["buildings"] = buildingList;
+    # updateGameState(data);
     allBuildings = Map.get(game, "buildings")
     delBuildings = List.delete(allBuildings, building)
     building = Map.replace!(building, "underAttack", true)
@@ -154,20 +206,18 @@ defmodule CaptureCampus.Game do
   end
 
   def cancelAttack(game, building) do
-
-    attacker = Map.get(building, "attacker")
-    team = Map.get(attacker, "team")
-    if(team == "team1") do
-      currTeam1Attacks = Map.get(game, "team1Attacks")
-      currTeam1Attacks = List.delete(currTeam1Attacks, building)
-      game = Map.replace!(game, "team1Attacks", currTeam1Attacks)
-    else
-      currTeam2Attacks = Map.get(game, "team2Attacks")
-      currTeam2Attacks = List.delete(currTeam2Attacks, building)
-      game = Map.replace!(game, "team2Attacks", currTeam2Attacks)
-    end
-
-
+    # // building.underAttack = false;
+    # // building.attacker = {};
+    # // building.attackEnds = "";
+    # //
+    # // var buildingList = props.game.buildings;
+    # // buildingList[buildingIndex] = building;
+    # //
+    # //
+    # //
+    # // let data = {};
+    # // data["buildings"] = buildingList;
+    # // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
     allBuildings = Map.get(game, "buildings")
     delBuildings = List.delete(allBuildings, building)
     building = Map.replace!(building, "underAttack", false)
@@ -175,7 +225,6 @@ defmodule CaptureCampus.Game do
     building = Map.replace!(building, "attackEnds", "")
 
     newBuildings = delBuildings ++ [building]
-
 
     game = Map.replace!(game, "buildings", newBuildings)
     game
@@ -198,25 +247,6 @@ defmodule CaptureCampus.Game do
       game = Map.replace!(game, "team2Score", currentScore)
     end
 
-    team1FinScore = Map.get(game, "team1Score")
-    team2FinScore = Map.get(game, "team2Score")
-    totalScore = team1FinScore + team2FinScore
-
-    team1 = Map.get(game, "team1")
-    team2 = Map.get(game, "team2")
-
-    if totalScore == length(Map.get(game, "buildings")) do
-      if team1FinScore > team2FinScore do
-        game = Map.replace!(game, "winner", "team1")
-        Enum.map(team1, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
-        Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
-      else
-        game = Map.replace!(game, "winner", "team2")
-        Enum.map(team2, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
-        Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
-      end
-    end
-
     allBuildings = Map.get(game, "buildings")
     delBuildings = List.delete(allBuildings, building)
     building = Map.replace!(building, "underAttack", false)
@@ -228,6 +258,46 @@ defmodule CaptureCampus.Game do
 
     game = Map.replace!(game, "buildings", newBuildings)
     game
+    # if (currentTeam == "team1"){
+    #   var currentlyAttacking = props.game.team1Attacks;
+    #   var index = currentlyAttacking.indexOf(building);
+    #   if (index > -1){
+    #     currentlyAttacking.splice(index, 1);
+    #   }
+    #   console.log(currentlyAttacking)
+    #   data["team1Attacks"] = currentlyAttacking;
+    #
+    #   //increase team score
+    #   var currentScore = props.game.team1Score;
+    #   var newScore = currentScore + 1;
+    #   data["team1Score"] = newScore;
+    #
+    # } else {
+    #     var currentlyAttacking = props.game.team2Attacks;
+    #     var index = currentlyAttacking.indexOf(building);
+    #     if (index > -1){
+    #       currentlyAttacking.splice(index, 1);
+    #     }
+    #     console.log(currentlyAttacking)
+    #     data["team2Attacks"] = currentlyAttacking;
+    #
+    #     //increase team score
+    #     var currentScore = props.game.team2Score;
+    #     var newScore = currentScore + 1;
+    #     data["team2Score"] = newScore;
+    # }
+    #
+    # console.log(data)
+    # //building captured
+    # var buildingList = props.game.buildings;
+    # building.underAttack = false;
+    # building.attacker={};
+    # building.attackEnds = "";
+    # building.captured = true;
+    # building.owner = currentTeam;
+    # buildingList[buildingIndex] = building;
+    # let currentlyCaptured;
+    # data["buildings"] = buildingList;
 
   end
 
@@ -235,12 +305,12 @@ defmodule CaptureCampus.Game do
   def add_user(game, user_id) do
     IO.inspect(user_id)
     IO.inspect(game)
-    team1 = Map.get(game, :team1)
-    team2 = Map.get(game, :team2)
+    team1 = game.team1
+    team2 = game.team2
     location = %{:lat => 0, :lng => 0}
     player = %{:user_id => user_id, :ko => false, :location => location}
 
-    allPlayers = team1 ++ team2 || []
+    allPlayers = team1 ++ team2
     dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
 
 
@@ -255,12 +325,7 @@ defmodule CaptureCampus.Game do
         end
       end
     end
-
-    allPlayers = team1 ++ team2 || []
-    IO.inspect("ADDUSER")
-    IO.inspect(length(allPlayers))
-    IO.inspect(game.team_size)
-    if length(allPlayers) == game.team_size do
+    if (length(team1) + length(team2)) == game.team_size do
       game = Map.put(game, :status, "start")
     end
     game
@@ -289,13 +354,13 @@ defmodule CaptureCampus.Game do
      Enum.map(team2, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
      Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
-     game = Map.put(game, "winner", "team2")
+     game = Map.put(game, "winner", "Team 2")
    end
    if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
      Enum.map(team1, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
      Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
-     game = Map.put(game, "winner", "team1")
+     game = Map.put(game, "winner", "Team 1")
    end
    game = Map.replace!(game, "team1", newTeam1)
    game = Map.replace!(game, "team2", newTeam2)
