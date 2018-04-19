@@ -14,10 +14,12 @@ let channel;
 let currPos;
 let attacking = false;
 let currentTeam;
-let ko = true;
+let score = {team1: 0, team2: 0};
+let ko = false;
 
 function GamePage(props) {
   let attackPercentage = 0;
+  score = updateScore();
 
   console.log(props)
 
@@ -33,6 +35,25 @@ function GamePage(props) {
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
        <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link>
       </div>;
+
+  //also check for wins/losses here
+  function updateScore() {
+    let newScore = {team1: 0, team2: 0}
+    const buildings = props.game.buildings;
+    _.map(buildings, function(b){
+      if(b.captured) {
+        newScore[b.owner]++;        
+      }
+    })
+    const enemyTeam = (currentTeam == 'team1') ? 'team2' : 'team1';
+    if(newScore[currentTeam] == buildings.length) {
+      $("#victory-screen").modal('show');
+    }
+    else if(newScore[enemyTeam] == buildings.length) {
+      $("#defeat-screen").modal('show');
+    }
+    return newScore;
+  }
 
   function revive() {
     console.log("REVIVE")
@@ -130,6 +151,8 @@ function GamePage(props) {
         } else {
           data['team1'] = enemyTeam;
         }
+
+        channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
         updateGameState(data);
       }
     })
@@ -400,6 +423,33 @@ function GamePage(props) {
          </div>
        </div>
      </div>
+
+      <div class="modal fade" id="victory-screen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Game over</h5>
+            </div>
+            <div class="modal-body">
+              <h1 style={{color: '#179b20'}}> Victory! </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="modal fade" id="defeat-screen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Game over</h5>
+            </div>
+            <div class="modal-body">
+              <h1 style={{color: '#d1193d'}}> Defeat! </h1>
+            </div>
+          </div>
+        </div>
+      </div>
+
   </div>;
 
   } else {
