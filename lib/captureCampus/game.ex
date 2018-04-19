@@ -155,6 +155,19 @@ defmodule CaptureCampus.Game do
 
   def cancelAttack(game, building) do
 
+    attacker = Map.get(building, "attacker")
+    team = Map.get(attacker, "team")
+    if(team == "team1") do
+      currTeam1Attacks = Map.get(game, "team1Attacks")
+      currTeam1Attacks = List.delete(currTeam1Attacks, building)
+      game = Map.replace!(game, "team1Attacks", currTeam1Attacks)
+    else
+      currTeam2Attacks = Map.get(game, "team2Attacks")
+      currTeam2Attacks = List.delete(currTeam2Attacks, building)
+      game = Map.replace!(game, "team2Attacks", currTeam2Attacks)
+    end
+
+
     allBuildings = Map.get(game, "buildings")
     delBuildings = List.delete(allBuildings, building)
     building = Map.replace!(building, "underAttack", false)
@@ -162,6 +175,7 @@ defmodule CaptureCampus.Game do
     building = Map.replace!(building, "attackEnds", "")
 
     newBuildings = delBuildings ++ [building]
+
 
     game = Map.replace!(game, "buildings", newBuildings)
     game
@@ -188,11 +202,18 @@ defmodule CaptureCampus.Game do
     team2FinScore = Map.get(game, "team2Score")
     totalScore = team1FinScore + team2FinScore
 
+    team1 = Map.get(game, "team1")
+    team2 = Map.get(game, "team2")
+
     if totalScore == length(Map.get(game, "buildings")) do
       if team1FinScore > team2FinScore do
         game = Map.replace!(game, "winner", "team1")
+        Enum.map(team1, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
+        Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
       else
         game = Map.replace!(game, "winner", "team2")
+        Enum.map(team2, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
+        Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
       end
     end
 
@@ -219,7 +240,7 @@ defmodule CaptureCampus.Game do
     location = %{:lat => 0, :lng => 0}
     player = %{:user_id => user_id, :ko => false, :location => location}
 
-    allPlayers = team1 ++ team2 || []
+    allPlayers = team1 ++ team2
     dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
 
 
@@ -234,8 +255,13 @@ defmodule CaptureCampus.Game do
         end
       end
     end
-    if (length(team1) + length(team2)) == game.team_size do
-      game = Map.put(game, "status", "start")
+
+    allPlayers = team1 ++ team2
+    IO.inspect("ADDUSER")
+    IO.inspect(length(allPlayers))
+    IO.inspect(game.team_size)
+    if length(allPlayers) == game.team_size do
+      game = Map.put(game, :status, "start")
     end
     game
   end
@@ -263,13 +289,13 @@ defmodule CaptureCampus.Game do
      Enum.map(team2, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
      Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
-     game = Map.put(game, "winner", "Team 2")
+     game = Map.put(game, "winner", "team2")
    end
    if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
      Enum.map(team1, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
      Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
-     game = Map.put(game, "winner", "Team 1")
+     game = Map.put(game, "winner", "team1")
    end
    game = Map.replace!(game, "team1", newTeam1)
    game = Map.replace!(game, "team2", newTeam2)

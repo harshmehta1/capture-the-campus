@@ -21,7 +21,7 @@ var times = 0;
 
 function GamePage(props) {
   let attackPercentage = 0;
-  score = updateScore();
+  // score = updateScore();
 
   console.log(props)
 
@@ -37,23 +37,23 @@ function GamePage(props) {
       </div>;
 
   //also check for wins/losses here
-  function updateScore() {
-    let newScore = {team1: 0, team2: 0}
-    const buildings = props.game.buildings;
-    _.map(buildings, function(b){
-      if(b.captured) {
-        newScore[b.owner]++;
-      }
-    })
-    const enemyTeam = (currentTeam == 'team1') ? 'team2' : 'team1';
-    if(newScore[currentTeam] == buildings.length) {
-      $("#victory-screen").modal('show');
-    }
-    else if(newScore[enemyTeam] == buildings.length) {
-      $("#defeat-screen").modal('show');
-    }
-    return newScore;
-  }
+  // function updateScore() {
+  //   let newScore = {team1: 0, team2: 0}
+  //   const buildings = props.game.buildings;
+  //   _.map(buildings, function(b){
+  //     if(b.captured) {
+  //       newScore[b.owner]++;
+  //     }
+  //   })
+  //   const enemyTeam = (currentTeam == 'team1') ? 'team2' : 'team1';
+  //   if(newScore[currentTeam] == buildings.length) {
+  //     $("#victory-screen").modal('show');
+  //   }
+  //   else if(newScore[enemyTeam] == buildings.length) {
+  //     $("#defeat-screen").modal('show');
+  //   }
+  //   return newScore;
+  // }
 
   function revive() {
     console.log("REVIVE")
@@ -74,18 +74,6 @@ function GamePage(props) {
         return;
       }
       else {
-        //get currentteam
-        // let team = props.game[currentTeam];
-        // let player = _.filter(team, function(x) {
-        //   return x['user_id'] == props.user.user_id;
-        // })[0];
-        // let playerIndex = team.indexOf(player)
-        // player.ko = false;
-        // //set global ko to false
-        // ko = false
-        // team[playerIndex] = player;
-        // let data = {};
-        // data[currentTeam] = team;
 
         channel.push("revive", {game: props.game, user_id: props.user.user_id, team: currentTeam})
         ko = false;
@@ -364,7 +352,12 @@ function GamePage(props) {
     function gotView(view){
       if(view.game.winner != "" && times == 0)
      {
-        alert(view.game.winner + " Wins!");
+       if(view.game.winner == currentTeam){
+         $("#victory-screen").modal('show');
+       } else {
+         $("#defeat-screen").modal('show');
+       }
+        // alert(view.game.winner + " Wins!");
         times = 1;
         window.location = "/"
       }
