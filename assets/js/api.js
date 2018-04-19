@@ -133,6 +133,15 @@ class TheServer {
         game_token: gameData,
       })
   }
+
+  resetGameToken()
+  {
+    store.dispatch({
+        type: 'SET_GAME_TOKEN',
+        game_token: null,
+      })
+  }
+
 }
 
 export default new TheServer();

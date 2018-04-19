@@ -24,6 +24,16 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:noreply, socket}
   end
 
+  def handle_in("broadcast_my_state", game, socket) do
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
+
+  def handle_in("ko", payload, socket) do
+    broadcast! socket, "player_kod", payload
+    {:noreply, socket}
+  end
+
   def handle_in("update_state", game, socket) do
     IO.inspect("broadcast received")
     IO.inspect(game)
@@ -41,19 +51,6 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:noreply, socket}
   end
 
-  # # Channels can be used in a request/response fashion
-  # # by sending replies to requests from the client
-  # def handle_in("ping", payload, socket) do
-  #   {:reply, {:ok, payload}, socket}
-  # end
-  #
-   #def handle_in("addUser", payload, socket) do
-    # game = Game.addPlayer(payload["user_id"], payload["game_size"], GameBackup.load(socket.assigns[:channel_no]))
-    # GameBackup.save(socket.assigns[:channel_no], game)
-    # broadcast socket, "shout", %{"game" => game}
-    # {:noreply, socket}
-  # end
-  #
    def handle_in("deleteUser", %{"user_id" => user_id, "game_size" => game_size, "game" => game}, socket) do
      game = Game.removePlayer(game, user_id)
      GameBackup.save(socket.assigns[:channel_no], game)
@@ -189,9 +186,12 @@ defmodule CaptureCampusWeb.GamesChannel do
 
   # chat functionality
   def handle_in("sendMsg", payload, socket) do
-    broadcast! socket, "sendMsg", %{"msg" => payload["message"]}
+    IO.inspect payload
+    IO.inspect socket
+    broadcast! socket, "displayMsg", %{"msg" => payload["message"]}
     {:noreply, socket}
   end
+
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do
