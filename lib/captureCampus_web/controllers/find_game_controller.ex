@@ -20,14 +20,13 @@ defmodule CaptureCampusWeb.FindGameController do
             if !Enum.member?(players, user_id) do
               players = players ++ [user_id]
             end
-            if length(players) <= game_size do
-              GamesList.save(12, {players, channelNo})
+            if length(players) == game_size do
+              GamesList.save(12, {[], Enum.random(0.. Kernel.trunc(:math.pow(9,5)))})
               conn
               |> put_status(:created)
               |> render("channelNo.json", channel_no: channelNo)
             else
               players = [user_id]
-              channelNo = Enum.random(0.. Kernel.trunc(:math.pow(9,5)))
               GamesList.save(12, {players, channelNo})
               conn
               |> put_status(:created)

@@ -381,6 +381,10 @@ function GamePage(props) {
 
 
     channel.on("state_update", game => {
+        if(game.winner != "")
+        {
+          alert(game.winner + " Wins!");
+        }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });
