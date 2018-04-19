@@ -1,5 +1,11 @@
 @import "bootstrap";
 /* This file is for your main application css. */
+html, body {
+  height: 100%;
+  width: 100%;
+}
+
+
 .googleMaps {
   top: 0;
   left:0;
@@ -33,6 +39,20 @@
   text-align: center;
   z-index: 1;
   background-color: black;
+}
+
+.logo {
+  padding: 20px;
+  text-align: center;
+}
+
+.logo-mini {
+  vertical-align: middle;
+  padding: 10px;
+}
+
+.game-fn {
+  text-align: center;
 }
 
 #defendBtn {

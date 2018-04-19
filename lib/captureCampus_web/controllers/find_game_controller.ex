@@ -12,6 +12,10 @@ defmodule CaptureCampusWeb.FindGameController do
     else
       rank = 0
     end
+
+    IO.inspect("RANK")
+    IO.inspect(rank)
+    IO.inspect(game_size)
     cond do
       game_size == 2 ->
         cond do

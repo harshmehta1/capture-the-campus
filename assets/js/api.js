@@ -115,7 +115,7 @@ class TheServer {
          //   this.set_channel(channel)
        },
      error:(resp) => {
-       alert("Something went wrong!")
+       alert("Please select a gameplay!")
      }
    });
  }
@@ -133,15 +133,6 @@ class TheServer {
         game_token: gameData,
       })
   }
-
-  resetGameToken()
-  {
-    store.dispatch({
-        type: 'SET_GAME_TOKEN',
-        game_token: null,
-      })
-  }
-
 }
 
 export default new TheServer();

@@ -99,7 +99,12 @@ function Login(props){
   return (
     <div>
       <div className="container">
-        <div className="row">
+        <div className="row logo-container">
+          <div className="col-md-12 logo">
+            <h2><i className="fas fa-flag-checkered"></i> Capture the Campus!</h2>
+          </div>
+        </div>
+        <div className="row form-container">
           <div className="col-md-6">
             <LoginForm />
           </div>

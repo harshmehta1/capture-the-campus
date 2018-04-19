@@ -14,6 +14,8 @@ let Session = connect(({token}) => {return {token};})((props) => {
     localStorage.clear();
   }
 
+
+
   console.log("SESSION")
   console.log(props.token)
 
@@ -34,30 +36,22 @@ export default function Lobby(props) {
   //api.get_existing_games(props.token.user_id);
   return <div className="container">
     <div className="row">
-      <div className="col offset-9">
+      <div className="col-6 logo-mini">
+        <h5><i className="fas fa-flag-checkered"></i> Capture the Campus!</h5>
+      </div>
+      <div className="col-3 offset-3">
         { logout_fn }
       </div>
     </div>
     <div className="row">
-      <div className="col">
+      <div className="col game-fn">
+        <h4>Select a PvP game to play:</h4>
         <div className="form-group">
-          <label htmlFor="new-game">New Game: </label>
-          <input type="text" className="form-control" placeholder="Game Name" id="new-game"/>
-          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="2"/>1v1</label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="4"/>2v2</label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="6"/>3v3</label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="8"/>4v4</label><br/>
-          <button className="btn btn-success">Create Game</button>
-          <Link to="/game"><Button className="btn btn-primary" onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Match</Button></Link>
-        </div>
-      </div>
-      <div className="col">
-        <div className="form-group">
-          <label htmlFor="exisiting-game">Existing Games:</label>
-          <select className="form-control" id="exisiting-game" >
-
-          </select><br/>
-        <Link to="/game"><button className="btn btn-primary">Join Game</button></Link>
+          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="2"/><h2>1v1</h2></label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="4"/><h2>2v2</h2></label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="6"/><h2>3v3</h2></label>
+          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="8"/><h2>4v4</h2></label><br/>
+          <Link to="/game"><Button className="btn-xl btn-warning" onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Match</Button></Link>
         </div>
       </div>
     </div>
