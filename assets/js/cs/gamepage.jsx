@@ -27,13 +27,13 @@ function GamePage(props) {
       <div>
         <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
         <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-        <button onClick={() => leaveGame()} className="btn btn-default">Leave Game</button>
+        <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
       </div> :
       <div>
        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-       <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
+       <button className="btn btn-warning" onClick={() => attack()}>Attack!</button>
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-       <button onClick={() => leaveGame()} className="btn btn-default">Leave Game</button>
+       <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
       </div>;
 
   //also check for wins/losses here
@@ -296,15 +296,17 @@ function GamePage(props) {
 
   function sendMessage()
   {
-    channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val()})
+    channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val(), team: currentTeam})
   }
 
 
   function displayMessage(resp)
   {
-     var text = resp.msg + "\n" + $('#chatOutput').html()
-     $("#chatOutput").html(text.replace(/\n/g, "<br />"));
-     $("#chatText").val("");
+     if(resp.srcTeam == currentTeam) {
+       var text = resp.msg + "\n" + $('#chatOutput').html()
+       $("#chatOutput").html(text.replace(/\n/g, "<br />"));
+       $("#chatText").val("");
+     }
   }
 
 
