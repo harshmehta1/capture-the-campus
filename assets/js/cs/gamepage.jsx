@@ -27,33 +27,14 @@ function GamePage(props) {
 
   let btn_panel = ko ?
       <div>
-        <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
-        <button onClick={() => validateLeaveGame()} className="btn btn-danger">Leave Game</button>
+        <button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button><br/>
+        <button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button><br/>
       </div> :
       <div>
-       <button className="btn btn-warning" onClick={() => attack()}>Attack!</button>
-       <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-       <button onClick={() => validateLeaveGame()} className="btn btn-danger">Leave Game</button>
+       <button className="btn btn-warning btn-panel" onClick={() => attack()}>Attack!</button><br/>
+       <button className="btn btn-info btn-panel" id="defendBtn" onClick={() => defend()}>Defend</button><br/>
+       <button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button><br/>
       </div>;
-
-  //also check for wins/losses here
-  // function updateScore() {
-  //   let newScore = {team1: 0, team2: 0}
-  //   const buildings = props.game.buildings;
-  //   _.map(buildings, function(b){
-  //     if(b.captured) {
-  //       newScore[b.owner]++;
-  //     }
-  //   })
-  //   const enemyTeam = (currentTeam == 'team1') ? 'team2' : 'team1';
-  //   if(newScore[currentTeam] == buildings.length) {
-  //     $("#victory-screen").modal('show');
-  //   }
-  //   else if(newScore[enemyTeam] == buildings.length) {
-  //     $("#defeat-screen").modal('show');
-  //   }
-  //   return newScore;
-  // }
 
   function revive() {
     console.log("REVIVE")
@@ -322,8 +303,8 @@ function GamePage(props) {
     console.log("ATK PC")
     console.log(attackPercentage)
       let attackProgress = <div className="progress attack-bar">
-      <div id="attackBar" className="progress-bar progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
-        {attackPercentage}%
+      <div id="attackBar" className="progress-bar bg-warning progress-bar-striped active" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="100">
+        <b>{attackPercentage}</b>%
       </div>
     </div>;
     // }
@@ -422,11 +403,11 @@ function GamePage(props) {
         <div className="attackNotifications" className="alert alert-danger" role="alert">
           {attackNotifs}
         </div>
-        <div className="messageNotifications" className="alert alert-light" role="alert">
-          {messageNotifs}
-          <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-        </div>
       </div>
+        <div className="alert alert-light messageNotifications" role="alert">
+          {messageNotifs}
+          <button type="button" className="btn btn-primary chat-btn" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+        </div>
       <div className="buttonPanel">
         { btn_panel }
       </div>
@@ -486,7 +467,7 @@ function GamePage(props) {
               <h5 className="modal-title">Are you sure you want to quit?</h5>
             </div>
             <div className="modal-body">
-              <p>You are trying to leave this game. This will be considered as a loss to you. Are you sure?</p>
+              <p><b>You are trying to leave this game!</b> This will be considered as a <b>loss</b> to you. Are you sure?</p>
             </div>
             <div class="modal-footer">
               <button type="button" class="btn btn-danger" onClick={() => leaveGame()}>Yes, I'm sure!</button>
