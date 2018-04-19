@@ -110,7 +110,10 @@ function GamePage(props) {
 
       let defendableBuildings = _.filter(buildingList, function(x){
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
-        return nearby && x.underAttack && (x.attacker.team != currentTeam);
+        var t = (new Date(x.attackEnds)).getTime() - (new Date()).getTime();
+        var timeLeft = t/1000;
+        var isTimeLeft = timeLeft > 1;
+        return nearby && x.underAttack && (x.attacker.team != currentTeam) && isTimeLeft;
       });
 
       if(!defendableBuildings[0]) {
@@ -207,7 +210,7 @@ function GamePage(props) {
         data["buildings"] = buildingList;
         updateGameState(data);
 
-        activateAttackTimer(currTime);
+        activateAttackTimer(currTime, locationFin.lat, locationFin.lng, locationFin, buildingIndex);
 
         channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
 
@@ -222,7 +225,7 @@ function GamePage(props) {
   var attackTimer = 0;
   var atkInterval;
 
-  function activateAttackTimer(d){
+  function activateAttackTimer(d, lat, lng, locationFin, buildingIndex){
       var t = d.getTime() - (new Date()).getTime();
       console.log("TIMER")
       console.log(t)
@@ -230,23 +233,83 @@ function GamePage(props) {
       console.log(tPercent)
       var tSec = tPercent/100;
       attackTimer = 0;
-      atkInterval = setInterval(timerHelper, tPercent);
+      atkInterval = setInterval(function(){timerHelper(lat, lng, locationFin, buildingIndex);}, tPercent);
       // attackTimer = 0;
       // attackPercentage = 0;
       // attacking = false;
   }
 
-  function timerHelper() {
-      attackTimer = attackTimer + 1;
-      if (attackTimer == 100){
-        console.log("CLEAR")
-        clearInterval(atkInterval);
-        attackTimer = 0;
-      } else {
-        $("#attackBar").css("width",attackTimer+"%");
-        $("#attackBar").html(attackTimer+"%");
-        // console.log(attackPercentage)
-      }
+  function timerHelper(lat, lng, building, buildingIndex) {
+      navigator.geolocation.getCurrentPosition(function(pos){
+        var inRange = distanceInKmBetweenEarthCoordinates(pos.coords.latitude, pos.coords.longitude, lat, lng) < 90;
+        // console.log(inRange)
+        if(inRange){
+          attackTimer = attackTimer + 1;
+          if (attackTimer == 100){
+            console.log("CLEAR")
+            let data = {};
+
+            if (currentTeam == "team1"){
+              var currentlyAttacking = props.game.team1Attacks;
+              var index = currentlyAttacking.indexOf(building);
+              if (index > -1){
+                currentlyAttacking.splice(index, 1);
+              }
+              data["team1Attacks"] = currentlyAttacking;
+
+            } else {
+                var currentlyAttacking = props.game.team2Attacks;
+                var index = currentlyAttacking.indexOf(building);
+                if (index > -1){
+                  currentlyAttacking.splice(index, 1);
+                }
+                data["team2Attacks"] = currentlyAttacking;
+            }
+
+
+            //building captured
+            var buildingList = props.game.buildings;
+            building.underAttack = false;
+            building.attacker={};
+            building.attackEnds = "";
+            building.captured = true;
+            building.owner = currentTeam;
+            buildingList[buildingIndex] = building;
+            let currentlyCaptured;
+            data["buildings"] = buildingList;
+
+            $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+
+            clearInterval(atkInterval);
+            attackTimer = 0;
+            $("#attackBar").css("width",attackTimer+"%");
+            $("#attackBar").html(attackTimer+"%");
+          } else {
+            $("#attackBar").css("width",attackTimer+"%");
+            $("#attackBar").html(attackTimer+"%");
+            // console.log(attackPercentage)
+          }
+        } else {
+          clearInterval(atkInterval);
+          $("#attackBar").css("width",0+"%");
+          $("#attackBar").html(0+"%");
+          building.underAttack = false;
+          building.attacker = {};
+          building.attackEnds = "";
+
+          var buildingList = props.game.buildings;
+          buildingList[buildingIndex] = building;
+
+
+
+          let data = {};
+          data["buildings"] = buildingList;
+          $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+
+          //cancel attack
+        }
+      });
+
   }
 
 
@@ -382,6 +445,10 @@ function GamePage(props) {
 
 
     channel.on("state_update", game => {
+        if(game.winner != "")
+        {
+          alert(game.winner + " Wins!");
+        }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });
