@@ -165,8 +165,14 @@ function GamePage(props) {
       }
 
       if(attackable){
+        console.log("ATTACKER")
+        console.log(locationFin.attacker.team)
         if(locationFin.captured){
           alert("You cannot capture that building!");
+        } else if(locationFin.attacker.user_id == props.user.user_id) {
+          alert("You are already attacking that building!");
+        } else if (locationFin.attacker.team != null && locationFin.attacker.team != currentTeam){
+          alert("Enemy team is attacking this building. You can Defend this building by pressing the 'Defend' button");
         } else {
         var currTime = new Date();
         currTime.setMinutes(currTime.getMinutes()+1);
@@ -305,7 +311,7 @@ function GamePage(props) {
        var text = resp.msg + "\n" + $('#chatOutput').html()
        $("#chatOutput").html(text.replace(/\n/g, "<br />"));
        $("#chatText").val("");
-       messageNotifs = "New Message " + resp.msg.substr(0, resp.msg.indexOf(":")) + " "; 
+       messageNotifs = "New Message " + resp.msg.substr(0, resp.msg.indexOf(":")) + " ";
      }
   }
 
