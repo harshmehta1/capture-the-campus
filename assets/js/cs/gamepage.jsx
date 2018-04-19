@@ -334,6 +334,8 @@ function GamePage(props) {
         if(game.winner != "")
         {
           alert(game.winner + " Wins!");
+          api.resetGameToken()
+          window.location = "/"
         }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))

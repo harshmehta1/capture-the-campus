@@ -106,25 +106,25 @@ defmodule CaptureCampus.Game do
         end
       end
     end
-    #if (length(team1) + length(team2)) == game.team_size do
-    #  game = Map.put(game, :status, "start")
-    #end
+    if (length(team1) + length(team2)) == game.team_size do
+      game = Map.put(game, :status, "start")
+    end
     game
   end
 
   def removePlayer(game, user_id) do
     team1 = Map.get(game, "team1")
     newTeam1 = Enum.filter(team1, fn(x) -> Map.get(x, "user_id")!=user_id end)
-    #if (Map.get(game, "status") == "start") && (length(newTeam1) == 0) do
-      #game = Map.put(game, "status", "Game Over!")
-      #game = Map.put(game, "winner", "Team 2")
-    #end
+    if (Map.get(game, "status") == "start") && (length(newTeam1) == 0) do
+      game = Map.put(game, "status", "Game Over!")
+      game = Map.put(game, "winner", "Team 2")
+    end
     team2 = Map.get(game, "team2")
     newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
-    #if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
-    #  game = Map.put(game, "status", "Game Over!")
-    #  game = Map.put(game, "winner", "Team 1")
-    #end
+    if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
+      game = Map.put(game, "status", "Game Over!")
+      game = Map.put(game, "winner", "Team 1")
+    end
     game = Map.replace!(game, "team1", newTeam1)
     game = Map.replace!(game, "team2", newTeam2)
 
