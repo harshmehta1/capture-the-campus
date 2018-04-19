@@ -86,7 +86,7 @@ function GamePage(props) {
         team[playerIndex] = player;
         let data = {};
         data[currentTeam] = team;
-        updateGameState(data);
+        $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
       }
     })
   }
@@ -409,7 +409,7 @@ function GamePage(props) {
       attackNotifs = _.map(team2Atks, function(x){
         var t = (new Date(x.attackEnds)).getTime() - (new Date()).getTime();
         var timeLeft = t/1000;
-        return <div><p>TEAM 2 is attacking building {x.name}. You have {timeLeft} seconds to defend the building!</p></div>;
+        return <div><p>TEAM 2 is attacking building {x.name}. You have {((new Date(x.attackEnds)).getTime() - (new Date()).getTime())/1000} seconds to defend the building!</p></div>;
       });
     } else {
       var team1Atks = props.game.team1Attacks;
@@ -452,6 +452,7 @@ function GamePage(props) {
         clearInterval(atkInterval);
         $("#attackBar").css("width",0+"%");
         $("#attackBar").html(0+"%");
+        ko = true;
         alert("You have been KNOCKED OUT! Go to Snell Library to revive yourself!");
       }
     })
