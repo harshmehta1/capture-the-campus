@@ -9,8 +9,8 @@ defmodule CaptureCampus.Game do
       buildings: Enum.take_random(buildingList(), game_size + 1),
       team1Attacks: [],
       team2Attacks: [],
-      team1Score: [],
-      team2Score: [],
+      team1Score: 0,
+      team2Score: 0,
       status: "Waiting For Players",
       winner: "",
     }
@@ -62,7 +62,28 @@ defmodule CaptureCampus.Game do
       %{:name => "East Village", :lat => 42.340437, :lng => -71.086879, :captured => false, :underAttack => false, :attacker => %{}, :attackEnds => "", :owner => "" }]
   end
 
-  def handleAttack(game, building, team) do
+  def handleAttack(game, building, team, user_id, currTime) do
+
+    # buildingIndex = buildingList.indexOf(locationFin)
+    # locationFin.underAttack = true;
+    # locationFin.attackEnds = currTime;
+    # locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
+    # buildingList[buildingIndex] = locationFin;
+    #
+    # let data = {};
+    # data["buildings"] = buildingList;
+    # updateGameState(data);
+    allBuildings = Map.get(game, "buildings")
+    delBuildings = List.delete(allBuildings, building)
+    building = Map.replace!(building, "underAttack", true)
+    building = Map.replace!(building, "attacker", %{:user_id => user_id, :team => team})
+    building = Map.replace!(building, "attackEnds", currTime)
+
+    newBuildings = delBuildings ++ [building]
+
+    game = Map.replace!(game, "buildings", newBuildings)
+    
+
     if (team == "team1") do
       currTeam1Attacks = Map.get(game, "team1Attacks")
       if currTeam1Attacks != nil do
@@ -82,6 +103,103 @@ defmodule CaptureCampus.Game do
     end
     game
   end
+
+  def cancelAttack(game, building) do
+    # // building.underAttack = false;
+    # // building.attacker = {};
+    # // building.attackEnds = "";
+    # //
+    # // var buildingList = props.game.buildings;
+    # // buildingList[buildingIndex] = building;
+    # //
+    # //
+    # //
+    # // let data = {};
+    # // data["buildings"] = buildingList;
+    # // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+    allBuildings = Map.get(game, "buildings")
+    delBuildings = List.delete(allBuildings, building)
+    building = Map.replace!(building, "underAttack", false)
+    building = Map.replace!(building, "attacker", %{})
+    building = Map.replace!(building, "attackEnds", "")
+
+    newBuildings = delBuildings ++ [building]
+
+    game = Map.replace!(game, "buildings", newBuildings)
+    game
+  end
+
+  def captureBuilding(game, building, team) do
+    if team == "team1" do
+      currentAttacks = Map.get(game, "team1Attacks")
+      newAttacks = List.delete(currentAttacks, building)
+      game = Map.replace!(game, "team1Attacks", newAttacks)
+      currentScore = Map.get(game, "team1Score")
+      currentScore = currentScore + 1;
+      game = Map.replace!(game, "team1Score", currentScore)
+    else
+      currentAttacks = Map.get(game, "team2Attacks")
+      newAttacks = List.delete(currentAttacks, building)
+      game = Map.replace!(game, "team2Attacks", newAttacks)
+      currentScore = Map.get(game, "team2Score")
+      currentScore = currentScore + 1;
+      game = Map.replace!(game, "team2Score", currentScore)
+    end
+
+    allBuildings = Map.get(game, "buildings")
+    delBuildings = List.delete(allBuildings, building)
+    building = Map.replace!(building, "underAttack", false)
+    building = Map.replace!(building, "attacker", %{})
+    building = Map.replace!(building, "attackEnds", "")
+    building = Map.replace!(building, "captured", true)
+    building = Map.replace!(building, "owner", team)
+    newBuildings = delBuildings ++ [building]
+
+    game = Map.replace!(game, "buildings", newBuildings)
+    game
+    # if (currentTeam == "team1"){
+    #   var currentlyAttacking = props.game.team1Attacks;
+    #   var index = currentlyAttacking.indexOf(building);
+    #   if (index > -1){
+    #     currentlyAttacking.splice(index, 1);
+    #   }
+    #   console.log(currentlyAttacking)
+    #   data["team1Attacks"] = currentlyAttacking;
+    #
+    #   //increase team score
+    #   var currentScore = props.game.team1Score;
+    #   var newScore = currentScore + 1;
+    #   data["team1Score"] = newScore;
+    #
+    # } else {
+    #     var currentlyAttacking = props.game.team2Attacks;
+    #     var index = currentlyAttacking.indexOf(building);
+    #     if (index > -1){
+    #       currentlyAttacking.splice(index, 1);
+    #     }
+    #     console.log(currentlyAttacking)
+    #     data["team2Attacks"] = currentlyAttacking;
+    #
+    #     //increase team score
+    #     var currentScore = props.game.team2Score;
+    #     var newScore = currentScore + 1;
+    #     data["team2Score"] = newScore;
+    # }
+    #
+    # console.log(data)
+    # //building captured
+    # var buildingList = props.game.buildings;
+    # building.underAttack = false;
+    # building.attacker={};
+    # building.attackEnds = "";
+    # building.captured = true;
+    # building.owner = currentTeam;
+    # buildingList[buildingIndex] = building;
+    # let currentlyCaptured;
+    # data["buildings"] = buildingList;
+
+  end
+
 
   def add_user(game, user_id) do
     IO.inspect(user_id)
