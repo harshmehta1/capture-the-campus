@@ -204,20 +204,20 @@ function GamePage(props) {
         } else {
         var currTime = new Date();
         currTime.setMinutes(currTime.getMinutes()+1);
-
-        buildingIndex = buildingList.indexOf(locationFin)
-        locationFin.underAttack = true;
-        locationFin.attackEnds = currTime;
-        locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
-        buildingList[buildingIndex] = locationFin;
-
-        let data = {};
-        data["buildings"] = buildingList;
-        updateGameState(data);
+        // 
+        // buildingIndex = buildingList.indexOf(locationFin)
+        // locationFin.underAttack = true;
+        // locationFin.attackEnds = currTime;
+        // locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
+        // buildingList[buildingIndex] = locationFin;
+        //
+        // let data = {};
+        // data["buildings"] = buildingList;
+        // updateGameState(data);
 
         activateAttackTimer(currTime, locationFin.lat, locationFin.lng, locationFin, buildingIndex);
 
-        channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
+        channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam, user_id: props.user.user_id, start_time: currTime})
 
 
         console.log(buildingIndex)
@@ -252,38 +252,52 @@ function GamePage(props) {
           attackTimer = attackTimer + 1;
           if (attackTimer == 100){
             console.log("CLEAR")
-            let data = {};
+            // let data = {};
+            //
+            // if (currentTeam == "team1"){
+            //   var currentlyAttacking = props.game.team1Attacks;
+            //   var index = currentlyAttacking.indexOf(building);
+            //   if (index > -1){
+            //     currentlyAttacking.splice(index, 1);
+            //   }
+            //   console.log(currentlyAttacking)
+            //   data["team1Attacks"] = currentlyAttacking;
+            //
+            //   //increase team score
+            //   var currentScore = props.game.team1Score;
+            //   var newScore = currentScore + 1;
+            //   data["team1Score"] = newScore;
+            //
+            // } else {
+            //     var currentlyAttacking = props.game.team2Attacks;
+            //     var index = currentlyAttacking.indexOf(building);
+            //     if (index > -1){
+            //       currentlyAttacking.splice(index, 1);
+            //     }
+            //     console.log(currentlyAttacking)
+            //     data["team2Attacks"] = currentlyAttacking;
+            //
+            //     //increase team score
+            //     var currentScore = props.game.team2Score;
+            //     var newScore = currentScore + 1;
+            //     data["team2Score"] = newScore;
+            // }
+            //
+            // console.log(data)
+            // //building captured
+            // var buildingList = props.game.buildings;
+            // building.underAttack = false;
+            // building.attacker={};
+            // building.attackEnds = "";
+            // building.captured = true;
+            // building.owner = currentTeam;
+            // buildingList[buildingIndex] = building;
+            // let currentlyCaptured;
+            // data["buildings"] = buildingList;
+            //
+            // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+            channel.push("capture_building", {game: props.game, building: building, team: currentTeam})
 
-            if (currentTeam == "team1"){
-              var currentlyAttacking = props.game.team1Attacks;
-              var index = currentlyAttacking.indexOf(building);
-              if (index > -1){
-                currentlyAttacking.splice(index, 1);
-              }
-              data["team1Attacks"] = currentlyAttacking;
-
-            } else {
-                var currentlyAttacking = props.game.team2Attacks;
-                var index = currentlyAttacking.indexOf(building);
-                if (index > -1){
-                  currentlyAttacking.splice(index, 1);
-                }
-                data["team2Attacks"] = currentlyAttacking;
-            }
-
-
-            //building captured
-            var buildingList = props.game.buildings;
-            building.underAttack = false;
-            building.attacker={};
-            building.attackEnds = "";
-            building.captured = true;
-            building.owner = currentTeam;
-            buildingList[buildingIndex] = building;
-            let currentlyCaptured;
-            data["buildings"] = buildingList;
-
-            $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
 
             clearInterval(atkInterval);
             attackTimer = 0;
@@ -298,18 +312,20 @@ function GamePage(props) {
           clearInterval(atkInterval);
           $("#attackBar").css("width",0+"%");
           $("#attackBar").html(0+"%");
-          building.underAttack = false;
-          building.attacker = {};
-          building.attackEnds = "";
 
-          var buildingList = props.game.buildings;
-          buildingList[buildingIndex] = building;
-
-
-
-          let data = {};
-          data["buildings"] = buildingList;
-          $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+          channel.push("cancel_attack", {game: props.game, building: building})
+          // building.underAttack = false;
+          // building.attacker = {};
+          // building.attackEnds = "";
+          //
+          // var buildingList = props.game.buildings;
+          // buildingList[buildingIndex] = building;
+          //
+          //
+          //
+          // let data = {};
+          // data["buildings"] = buildingList;
+          // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
 
           //cancel attack
         }
@@ -475,7 +491,7 @@ function GamePage(props) {
 
     return <div>
       <div className="googleMaps">
-        <CamMap buildings={props.game.buildings}/>
+        <CamMap buildings={props.game.buildings} status={props.game.status}/>
       </div>
       <div className="attackNotifications">
         {attackNotifs}

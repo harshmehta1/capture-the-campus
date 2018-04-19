@@ -65,9 +65,10 @@ function CamMap(props){
     //   }
     // }
     // navigator.geolocation.watchPosition(success, error, options);
-
-  let markerList = _.map(allBuildings, function (x, ii) {
-    console.log(x);
+    let markerList;
+    if(props.status == "start"){
+    markerList = _.map(allBuildings, function (x, ii) {
+    // console.log(x);
     if(x.underAttack && (x.attacker.team == "team1") && (x.captured == false)){
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} icon={"/images/greenflag.png"}/>
     }
@@ -83,7 +84,8 @@ function CamMap(props){
     else {
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
     }
-  });
+    });
+  }
 
   // console.log(markerList)
 

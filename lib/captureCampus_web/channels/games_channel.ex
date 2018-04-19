@@ -34,6 +34,18 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:noreply, socket}
   end
 
+  def handle_in("capture_building", %{"game" => game, "building" => building, "team" => team}, socket) do
+    game = Game.captureBuilding(game, building, team)
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
+
+  def handle_in("cancel_attack", %{"game" => game, "building" => building}, socket) do
+    game = Game.cancelAttack(game, building)
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
+
   def handle_in("update_state", game, socket) do
     IO.inspect("broadcast received")
     IO.inspect(game)
@@ -44,10 +56,10 @@ defmodule CaptureCampusWeb.GamesChannel do
   end
 
 
-  def handle_in("attack", %{"building" => building, "game" => game, "attackingTeam" => team}, socket) do
-    game = Game.handleAttack(game, building, team)
+  def handle_in("attack", %{"building" => building, "game" => game, "attackingTeam" => team, "user_id" => user_id, "start_time" => currTime}, socket) do
+    game = Game.handleAttack(game, building, team, user_id, currTime)
     broadcast! socket, "attack_incoming", game
-    IO.inspect(game)
+    # IO.inspect(game)
     {:noreply, socket}
   end
 
