@@ -16,6 +16,7 @@ let attacking = false;
 let currentTeam;
 let score = {team1: 0, team2: 0};
 let ko = false;
+let messageNotifs;
 
 function GamePage(props) {
   let attackPercentage = 0;
@@ -26,11 +27,9 @@ function GamePage(props) {
   let btn_panel = ko ?
       <div>
         <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
-        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
         <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
       </div> :
       <div>
-       <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
        <button className="btn btn-warning" onClick={() => attack()}>Attack!</button>
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
        <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
@@ -306,6 +305,7 @@ function GamePage(props) {
        var text = resp.msg + "\n" + $('#chatOutput').html()
        $("#chatOutput").html(text.replace(/\n/g, "<br />"));
        $("#chatText").val("");
+       messageNotifs = "New Message " + resp.msg.substr(0, resp.msg.indexOf(":")) + " "; 
      }
   }
 
@@ -342,6 +342,7 @@ function GamePage(props) {
         return <div><p>TEAM 1 is attacking building {x.name}. You have {timeLeft} seconds to defend the building!</p></div>;
       });
     }
+
 
     console.log(attackNotifs)
 
@@ -398,21 +399,29 @@ function GamePage(props) {
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings} status={props.game.status}/>
       </div>
-      <div className="attackNotifications">
-        {attackNotifs}
-      </div>
       <div className="attackProgressBar">
         {attackProgress}
+      </div>
+      <div class="notifs">
+        <div className="attackNotifications" class="alert alert-danger" role="alert">
+          {attackNotifs}
+        </div>
+        <div className="messageNotifications" class="alert alert-light" role="alert">
+          {messageNotifs}
+          <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+        </div>
       </div>
       <div className="buttonPanel">
         { btn_panel }
       </div>
 
+     // Attribution to GetBootstrap.com for the below modal template
+     // https://getbootstrap.com/docs/4.0/components/modal/
      <div className="modal fade" id="exampleModalLong" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
        <div className="modal-dialog" role="document">
          <div className="modal-content">
            <div className="modal-header">
-             <h5 className="modal-title" id="exampleModalLongTitle">Chat Box</h5>
+             <h5 className="modal-title" id="exampleModalLongTitle">Team Chat Box</h5>
              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
              </button>
