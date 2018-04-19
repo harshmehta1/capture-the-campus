@@ -57,7 +57,7 @@ function gameToken(state=null, action){
     case 'SET_GAME_TOKEN':
       return action.game_token;
     case 'CLEAR_GAME_TOKEN':
-      return "";
+      return null;
     default:
       return state;
   }

@@ -65,14 +65,6 @@ class TheServer {
     })
   }
 
-  // set_game(game)
-  // {
-  //   store.dispatch({
-  //     type: 'UPDATE_GAME_STATE',
-  //     game: game.game,
-  //   })
-  // }
-
   set_channel(channel)
   {
     store.dispatch({
@@ -104,15 +96,6 @@ class TheServer {
               type: 'SET_GAME_TOKEN',
               game_token: gameData,
             })
-         //
-         // localStorage.setItem("channelNo", resp.channel_no); //caching the channel no for reconnection.
-         // let channel = socket.channel("games:"+resp.channel_no, {game_size: data.game_size})
-         // channel.join()
-         //   .receive("ok", console.log("Joined successfully", resp))
-         //   .receive("error", resp => { console.log("Unable to join", resp) });
-         //   channel.push("addUser", {user_id: user_id, game_size: parseInt(game_size)}).receive("ok", console.log("Player Added", resp))
-         //   channel.on("shout", this.set_game.bind(this.game))
-         //   this.set_channel(channel)
        },
      error:(resp) => {
        alert("Please select a gameplay!")
@@ -120,19 +103,6 @@ class TheServer {
    });
  }
 
-
-  join_this_game(game_info)
-  {
-    let gameData = {
-      channel_no: game_info.channel_no,
-      game_size: game_info.game_size,
-    }
-
-    store.dispatch({
-        type: 'SET_GAME_TOKEN',
-        game_token: gameData,
-      })
-  }
 }
 
 export default new TheServer();
