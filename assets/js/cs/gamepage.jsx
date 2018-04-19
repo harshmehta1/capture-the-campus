@@ -27,13 +27,13 @@ function GamePage(props) {
       <div>
         <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
         <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-        <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link>
+        <button onClick={() => leaveGame()} className="btn btn-default">Leave Game</button>
       </div> :
       <div>
        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
        <button className="btn btn-danger" onClick={() => attack()}>Attack!</button>
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-       <Link to="/" onClick={() => leaveGame()}><button className="btn btn-default">Leave Game</button></Link>
+       <button onClick={() => leaveGame()} className="btn btn-default">Leave Game</button>
       </div>;
 
   //also check for wins/losses here
@@ -114,72 +114,6 @@ function GamePage(props) {
         var timeLeft = t/1000;
         var isTimeLeft = timeLeft > 1;
         return nearby && x.underAttack && (x.attacker.team != currentTeam) && isTimeLeft;
-      });
-
-      if(!defendableBuildings[0]) {
-        alert("no building nearby to defend")
-        return
-      }
-      else {
-        dBuilding = defendableBuildings[0];
-        const attackerId = dBuilding.attacker.user_id;
-        buildingIndex = buildingList.indexOf(dBuilding);
-        dBuilding.underAttack = false;
-        dBuilding.attackEnds = "";
-        dBuilding.attacker = {};
-        // var enemyPlayer = _.filter(enemyTeam, function(x){
-        //   return x['user_id'] == attackerId;
-        // })[0];
-        let enemyTeam;
-        if (currentTeam == "team1"){
-          enemyTeam = props.game.team2;
-        } else {
-          enemyTeam = props.game.team1;
-        }
-
-        var enemyPlayer = _.filter(enemyTeam, function(x){
-          return x['user_id'] == attackerId;
-        })[0];
-
-        let playerIndex = enemyTeam.indexOf(enemyPlayer);
-        enemyPlayer.ko = true;
-        buildingList[buildingIndex] = dBuilding;
-        enemyTeam[playerIndex] = enemyPlayer;
-
-        let data = {};
-        data['buildings'] = buildingList;
-
-        if(currentTeam == "team1"){
-          data['team2'] = enemyTeam;
-        } else {
-          data['team1'] = enemyTeam;
-        }
-
-        channel.push("attack", {building: locationFin, game: props.game, attackingTeam: currentTeam})
-        updateGameState(data);
-      }
-    })
-  }
-
-  function defend(){
-    console.log("DEFEND")
-    let currLoc = {};
-    navigator.geolocation.getCurrentPosition(function(pos){
-      currLoc.lat = pos.coords.latitude;
-      currLoc.lng = pos.coords.longitude;
-
-      let buildingList = props.game.buildings;
-      // let enemyTeam;
-      // if(currentTeam = 'team1') {
-      //   enemyTeam = 'team2';
-      // }
-      // else {
-      //   enemyTeam = 'team2';
-      // }
-
-      let defendableBuildings = _.filter(buildingList, function(x){
-        const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
-        return nearby && x.underAttack && (x.attacker.team != currentTeam);
       });
       console.log(defendableBuildings)
       if(!defendableBuildings[0]) {
@@ -431,6 +365,7 @@ function GamePage(props) {
   {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
     joined=false;
+    window.location = "/";
   }
 
   function sendMessage()
@@ -512,6 +447,8 @@ function GamePage(props) {
         if(game.winner != "")
         {
           alert(game.winner + " Wins!");
+          api.resetGameToken()
+          window.location = "/"
         }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
