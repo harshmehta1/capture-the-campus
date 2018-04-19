@@ -37,6 +37,16 @@ defmodule CaptureCampus.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+  def addWins(id) do
+    user = get_user!(id)
+    update_user(user, %{wins: user.wins + 1})
+  end
+
+  def addGames(id) do
+    user = get_user!(id)
+    update_user(user, %{totalGames: user.totalGames + 1})
+  end
+
   @doc """
   Creates a user.
 

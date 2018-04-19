@@ -17,6 +17,7 @@ let currentTeam;
 let score = {team1: 0, team2: 0};
 let ko = false;
 let messageNotifs;
+var times = 0;
 
 function GamePage(props) {
   let attackPercentage = 0;
@@ -295,6 +296,7 @@ function GamePage(props) {
   function leaveGame()
   {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
+    channel.leave();
     joined=false;
     window.location = "/";
   }
@@ -360,17 +362,30 @@ function GamePage(props) {
     }
 
     function gotView(view){
-      props.dispatch({
-        type: 'UPDATE_GAME_STATE',
-        data: view.game,
-      })
+      if(view.game.winner != "" && times == 0)
+     {
+        alert(view.game.winner + " Wins!");
+        times = 1;
+        window.location = "/"
+      }
+      else
+      {
+        times = 0;
+        props.dispatch({
+          type: 'UPDATE_GAME_STATE',
+          data: view.game,
+        })
+      }
     }
 
     channel.on("sendMsg", resp => {displayMessage(resp)[0]});
 
     channel.on("attack_incoming", game => {
-      channel.push("update_state", game)
-        .receive("ok", gotView.bind(this))
+      if(game.winner == "")
+      {
+        channel.push("update_state", game)
+          .receive("ok", gotView.bind(this))
+      }
     });
 
     channel.on("player_kod", resp => {
@@ -386,12 +401,6 @@ function GamePage(props) {
 
 
     channel.on("state_update", game => {
-        if(game.winner != "")
-        {
-          alert(game.winner + " Wins!");
-          api.resetGameToken()
-          window.location = "/"
-        }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });

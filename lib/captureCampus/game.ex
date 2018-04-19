@@ -1,4 +1,5 @@
 defmodule CaptureCampus.Game do
+  alias CaptureCampus.Users
 
   def new(channel_no, game_size) do
     %{
@@ -213,12 +214,12 @@ defmodule CaptureCampus.Game do
   def add_user(game, user_id) do
     IO.inspect(user_id)
     IO.inspect(game)
-    team1 = game.team1
-    team2 = game.team2
+    team1 = Map.get(game, :team1)
+    team2 = Map.get(game, :team2)
     location = %{:lat => 0, :lng => 0}
     player = %{:user_id => user_id, :ko => false, :location => location}
 
-    allPlayers = team1 ++ team2
+    allPlayers = team1 ++ team2 || []
     dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
 
 
@@ -234,7 +235,7 @@ defmodule CaptureCampus.Game do
       end
     end
     if (length(team1) + length(team2)) == game.team_size do
-      game = Map.put(game, :status, "start")
+      game = Map.put(game, "status", "start")
     end
     game
   end
@@ -256,13 +257,17 @@ defmodule CaptureCampus.Game do
   def removePlayer(game, user_id) do
   team1 = Map.get(game, "team1")
    newTeam1 = Enum.filter(team1, fn(x) -> Map.get(x, "user_id")!=user_id end)
+   team2 = Map.get(game, "team2")
+   newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
    if (Map.get(game, "status") == "start") && (length(newTeam1) == 0) do
+     Enum.map(team2, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
+     Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
      game = Map.put(game, "winner", "Team 2")
    end
-   team2 = Map.get(game, "team2")
-   newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
    if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
+     Enum.map(team1, fn(x) -> Users.addWins(Map.get(x, "user_id")) end)
+     Enum.map(team1 ++ team2, fn(x) -> Users.addGames(Map.get(x, "user_id")) end)
      game = Map.put(game, "status", "Game Over!")
      game = Map.put(game, "winner", "Team 1")
    end

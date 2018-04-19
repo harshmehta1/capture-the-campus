@@ -81,7 +81,7 @@ defmodule CaptureCampusWeb.GamesChannel do
 
      user = Users.get_user!(user_id)
      if user.totalGames != 0 do
-       rank = div(user.wins, user.totalGames)
+       rank = div(user.wins, user.totalGames) * 100
      else
        rank = 0
      end
