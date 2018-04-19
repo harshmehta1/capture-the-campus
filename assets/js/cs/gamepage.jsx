@@ -75,18 +75,21 @@ function GamePage(props) {
       }
       else {
         //get currentteam
-        let team = props.game[currentTeam];
-        let player = _.filter(team, function(x) {
-          return x['user_id'] == props.user.user_id;
-        })[0];
-        let playerIndex = team.indexOf(player)
-        player.ko = false;
-        //set global ko to false
-        ko = false
-        team[playerIndex] = player;
-        let data = {};
-        data[currentTeam] = team;
-        $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+        // let team = props.game[currentTeam];
+        // let player = _.filter(team, function(x) {
+        //   return x['user_id'] == props.user.user_id;
+        // })[0];
+        // let playerIndex = team.indexOf(player)
+        // player.ko = false;
+        // //set global ko to false
+        // ko = false
+        // team[playerIndex] = player;
+        // let data = {};
+        // data[currentTeam] = team;
+
+        channel.push("revive", {game: props.game, user_id: props.user.user_id, team: currentTeam})
+        ko = false;
+        // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
       }
     })
   }
@@ -100,13 +103,7 @@ function GamePage(props) {
       currLoc.lng = pos.coords.longitude;
 
       let buildingList = props.game.buildings;
-      // let enemyTeam;
-      // if(currentTeam = 'team1') {
-      //   enemyTeam = 'team2';
-      // }
-      // else {
-      //   enemyTeam = 'team2';
-      // }
+
 
       let defendableBuildings = _.filter(buildingList, function(x){
         const nearby = distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, x.lat, x.lng) < 90;
@@ -119,45 +116,15 @@ function GamePage(props) {
       if(!defendableBuildings[0]) {
         alert("no building nearby to defend")
         return
-      }
-      else {
+      } else {
         var dBuilding = defendableBuildings[0];
         const attackerId = dBuilding.attacker.user_id;
-        var buildingIndex = buildingList.indexOf(dBuilding);
-        dBuilding.underAttack = false;
-        dBuilding.attackEnds = "";
-        dBuilding.attacker = {};
-        // var enemyPlayer = _.filter(enemyTeam, function(x){
-        //   return x['user_id'] == attackerId;
-        // })[0];
-        let enemyTeam;
-        if (currentTeam == "team1"){
-          enemyTeam = props.game.team2;
-        } else {
-          enemyTeam = props.game.team1;
-        }
 
-        var enemyPlayer = _.filter(enemyTeam, function(x){
-          return x['user_id'] == attackerId;
-        })[0];
+        channel.push("defend", {game: props.game, building: dBuilding, team: currentTeam})
 
-        let playerIndex = enemyTeam.indexOf(enemyPlayer);
-        enemyPlayer.ko = true;
-        buildingList[buildingIndex] = dBuilding;
-        enemyTeam[playerIndex] = enemyPlayer;
-
-        let data = {};
-        data['buildings'] = buildingList;
-
-        if(currentTeam == "team1"){
-          data['team2'] = enemyTeam;
-        } else {
-          data['team1'] = enemyTeam;
-        }
-
-        $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+        // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
         console.log("KO THIS USER")
-        console.log(attackerId)
+        // console.log(attackerId)
         channel.push("ko", {user_id: attackerId});
       }
     })
@@ -204,16 +171,7 @@ function GamePage(props) {
         } else {
         var currTime = new Date();
         currTime.setMinutes(currTime.getMinutes()+1);
-        // 
-        // buildingIndex = buildingList.indexOf(locationFin)
-        // locationFin.underAttack = true;
-        // locationFin.attackEnds = currTime;
-        // locationFin.attacker = {user_id: props.user.user_id, team: currentTeam};
-        // buildingList[buildingIndex] = locationFin;
-        //
-        // let data = {};
-        // data["buildings"] = buildingList;
-        // updateGameState(data);
+
 
         activateAttackTimer(currTime, locationFin.lat, locationFin.lng, locationFin, buildingIndex);
 
@@ -252,50 +210,7 @@ function GamePage(props) {
           attackTimer = attackTimer + 1;
           if (attackTimer == 100){
             console.log("CLEAR")
-            // let data = {};
-            //
-            // if (currentTeam == "team1"){
-            //   var currentlyAttacking = props.game.team1Attacks;
-            //   var index = currentlyAttacking.indexOf(building);
-            //   if (index > -1){
-            //     currentlyAttacking.splice(index, 1);
-            //   }
-            //   console.log(currentlyAttacking)
-            //   data["team1Attacks"] = currentlyAttacking;
-            //
-            //   //increase team score
-            //   var currentScore = props.game.team1Score;
-            //   var newScore = currentScore + 1;
-            //   data["team1Score"] = newScore;
-            //
-            // } else {
-            //     var currentlyAttacking = props.game.team2Attacks;
-            //     var index = currentlyAttacking.indexOf(building);
-            //     if (index > -1){
-            //       currentlyAttacking.splice(index, 1);
-            //     }
-            //     console.log(currentlyAttacking)
-            //     data["team2Attacks"] = currentlyAttacking;
-            //
-            //     //increase team score
-            //     var currentScore = props.game.team2Score;
-            //     var newScore = currentScore + 1;
-            //     data["team2Score"] = newScore;
-            // }
-            //
-            // console.log(data)
-            // //building captured
-            // var buildingList = props.game.buildings;
-            // building.underAttack = false;
-            // building.attacker={};
-            // building.attackEnds = "";
-            // building.captured = true;
-            // building.owner = currentTeam;
-            // buildingList[buildingIndex] = building;
-            // let currentlyCaptured;
-            // data["buildings"] = buildingList;
-            //
-            // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+
             channel.push("capture_building", {game: props.game, building: building, team: currentTeam})
 
 
@@ -314,18 +229,6 @@ function GamePage(props) {
           $("#attackBar").html(0+"%");
 
           channel.push("cancel_attack", {game: props.game, building: building})
-          // building.underAttack = false;
-          // building.attacker = {};
-          // building.attackEnds = "";
-          //
-          // var buildingList = props.game.buildings;
-          // buildingList[buildingIndex] = building;
-          //
-          //
-          //
-          // let data = {};
-          // data["buildings"] = buildingList;
-          // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
 
           //cancel attack
         }
@@ -503,46 +406,46 @@ function GamePage(props) {
         { btn_panel }
       </div>
 
-     <div class="modal fade" id="exampleModalLong" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-       <div class="modal-dialog" role="document">
-         <div class="modal-content">
-           <div class="modal-header">
-             <h5 class="modal-title" id="exampleModalLongTitle">Chat Box</h5>
-             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+     <div className="modal fade" id="exampleModalLong" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+       <div className="modal-dialog" role="document">
+         <div className="modal-content">
+           <div className="modal-header">
+             <h5 className="modal-title" id="exampleModalLongTitle">Chat Box</h5>
+             <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
              </button>
            </div>
-           <div class="modal-body" id="chatOutput">
+           <div className="modal-body" id="chatOutput">
            </div>
-           <div class="modal-footer" id="chatInput">
+           <div className="modal-footer" id="chatInput">
               <input type="text" className="form-control" id="chatText" placeholder="Your message"></input>
-             <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-             <button type="button" class="btn btn-primary" onClick={() => sendMessage()}>Send</button>
+             <button type="button" className="btn btn-secondary" data-dismiss="modal">Close</button>
+             <button type="button" className="btn btn-primary" onClick={() => sendMessage()}>Send</button>
            </div>
          </div>
        </div>
      </div>
 
-      <div class="modal fade" id="victory-screen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Game over</h5>
+      <div className="modal fade" id="victory-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Game over</h5>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <h1 style={{color: '#179b20'}}> Victory! </h1>
             </div>
           </div>
         </div>
       </div>
 
-      <div class="modal fade" id="defeat-screen" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title">Game over</h5>
+      <div className="modal fade" id="defeat-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h5 className="modal-title">Game over</h5>
             </div>
-            <div class="modal-body">
+            <div className="modal-body">
               <h1 style={{color: '#d1193d'}}> Defeat! </h1>
             </div>
           </div>

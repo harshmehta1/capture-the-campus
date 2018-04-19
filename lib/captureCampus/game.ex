@@ -62,6 +62,104 @@ defmodule CaptureCampus.Game do
       %{:name => "East Village", :lat => 42.340437, :lng => -71.086879, :captured => false, :underAttack => false, :attacker => %{}, :attackEnds => "", :owner => "" }]
   end
 
+  def revivePlayer(game, user_id, team) do
+    # let team = props.game[currentTeam];
+    # let player = _.filter(team, function(x) {
+    #   return x['user_id'] == props.user.user_id;
+    # })[0];
+    # let playerIndex = team.indexOf(player)
+    # player.ko = false;
+    # //set global ko to false
+    # ko = false
+    # team[playerIndex] = player;
+    # let data = {};
+    # data[currentTeam] = team;
+    if team == "team1" do
+      myTeam = Map.get(game, "team1")
+      thisPlayer = Enum.find(myTeam, fn(x) -> Map.get(x, "user_id")==user_id end)
+      myTeam = List.delete(myTeam, thisPlayer)
+      thisPlayer = Map.replace!(thisPlayer, "ko", false)
+      myTeam = myTeam ++ [thisPlayer]
+      game = Map.replace!(game, "team1", myTeam)
+    else
+      myTeam = Map.get(game, "team2")
+      thisPlayer = Enum.find(myTeam, fn(x) -> Map.get(x, "user_id")==user_id end)
+      myTeam = List.delete(myTeam, thisPlayer)
+      thisPlayer = Map.replace!(thisPlayer, "ko", false)
+      myTeam = myTeam ++ [thisPlayer]
+      game = Map.replace!(game, "team2", myTeam)
+    end
+    game
+  end
+
+  def defendBuilding(game, building, team) do
+    # const attackerId = dBuilding.attacker.user_id;
+    # var buildingIndex = buildingList.indexOf(dBuilding);
+    # dBuilding.underAttack = false;
+    # dBuilding.attackEnds = "";
+    # dBuilding.attacker = {};
+    # // var enemyPlayer = _.filter(enemyTeam, function(x){
+    # //   return x['user_id'] == attackerId;
+    # // })[0];
+    # let enemyTeam;
+    # if (currentTeam == "team1"){
+    #   enemyTeam = props.game.team2;
+    # } else {
+    #   enemyTeam = props.game.team1;
+    # }
+    #
+    # var enemyPlayer = _.filter(enemyTeam, function(x){
+    #   return x['user_id'] == attackerId;
+    # })[0];
+    #
+    # let playerIndex = enemyTeam.indexOf(enemyPlayer);
+    # enemyPlayer.ko = true;
+    # buildingList[buildingIndex] = dBuilding;
+    # enemyTeam[playerIndex] = enemyPlayer;
+    #
+    # let data = {};
+    # data['buildings'] = buildingList;
+    #
+    # if(currentTeam == "team1"){
+    #   data['team2'] = enemyTeam;
+    # } else {
+    #   data['team1'] = enemyTeam;
+    # }
+    attacker = Map.get(building, "attacker")
+    userToKO = Map.get(attacker, "user_id")
+
+    allBuildings = Map.get(game, "buildings")
+    delBuildings = List.delete(allBuildings, building)
+    newBuilding = Map.replace!(building, "underAttack", false)
+    newBuilding = Map.replace!(newBuilding, "attacker", %{})
+    newBuilding = Map.replace!(newBuilding, "attackEnds", "")
+    newBuildings = delBuildings ++ [newBuilding]
+    game = Map.replace!(game, "buildings", newBuildings)
+
+    if team == "team1" do
+      enemyTeam = Map.get(game, "team2")
+      enemy = Enum.find(enemyTeam, fn(x) -> Map.get(x, "user_id")==userToKO end)
+      enemyTeam = List.delete(enemyTeam, enemy)
+      enemy = Map.replace!(enemy, "ko", true)
+      enemyTeam = enemyTeam ++ [enemy]
+      game = Map.replace!(game, "team2", enemyTeam)
+      enemyAttacks = Map.get(game, "team2Attacks")
+      enemyAttacks = List.delete(enemyAttacks, building)
+      game = Map.replace!(game, "team2Attacks", enemyAttacks)
+    else
+      enemyTeam = Map.get(game, "team1")
+      enemy = Enum.find(enemyTeam, fn(x) -> Map.get(x, "user_id")==userToKO end)
+      enemyTeam = List.delete(enemyTeam, enemy)
+      enemy = Map.replace!(enemy, "ko", true)
+      enemyTeam = enemyTeam ++ [enemy]
+      game = Map.replace!(game, "team1", enemyTeam)
+      enemyAttacks = Map.get(game, "team1Attacks")
+      enemyAttacks = List.delete(enemyAttacks, building)
+      game = Map.replace!(game, "team1Attacks", enemyAttacks)
+    end
+    game
+  end
+
   def handleAttack(game, building, team, user_id, currTime) do
 
     # buildingIndex = buildingList.indexOf(locationFin)
@@ -82,7 +180,7 @@ defmodule CaptureCampus.Game do
     newBuildings = delBuildings ++ [building]
 
     game = Map.replace!(game, "buildings", newBuildings)
-    
+
 
     if (team == "team1") do
       currTeam1Attacks = Map.get(game, "team1Attacks")

@@ -55,6 +55,17 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:reply, {:ok, %{"game" => Game.client_view(game)}}, socket}
   end
 
+  def handle_in("revive", %{"game" => game, "user_id" => user_id, "team" => team}, socket) do
+    game = Game.revivePlayer(game, user_id, team)
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
+
+  def handle_in("defend", %{"game" => game, "building" => building, "team" => team}, socket) do
+    game = Game.defendBuilding(game, building, team)
+    broadcast! socket, "state_update", game
+    {:noreply, socket}
+  end
 
   def handle_in("attack", %{"building" => building, "game" => game, "attackingTeam" => team, "user_id" => user_id, "start_time" => currTime}, socket) do
     game = Game.handleAttack(game, building, team, user_id, currTime)
