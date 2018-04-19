@@ -92,7 +92,11 @@ function GamePage(props) {
         } else {
           data['team1'] = enemyTeam;
         }
-        updateGameState(data);
+
+        $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
+        console.log("KO THIS USER")
+        console.log(attackerId)
+        channel.push("ko", {user_id: attackerId});
       }
     })
   }
@@ -378,6 +382,16 @@ function GamePage(props) {
     channel.on("displayMsg", resp => {
       console.log("message being sent?")
       displayMessage(resp)
+    })
+
+    channel.on("player_kod", resp => {
+      console.log("KOOOO!!!")
+      if(resp.user_id == props.user.user_id){
+        clearInterval(atkInterval);
+        $("#attackBar").css("width",0+"%");
+        $("#attackBar").html(0+"%");
+        alert("You have been KNOCKED OUT! Go to Snell Library to revive yourself!");
+      }
     })
 
 
