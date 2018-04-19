@@ -193,16 +193,16 @@ function GamePage(props) {
   function sendMessage()
   {
     channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val()})
-    channel.on("sendMsg", resp => {displayMessage(resp)})
   }
 
 
   function displayMessage(resp)
   {
-   var text = resp.msg + "\n" + $('#chatOutput').html()
-   $("#chatOutput").html(text.replace(/\n/g, "<br />"));
-   $("#chatText").val("");
+     var text = resp.msg + "\n" + $('#chatOutput').html()
+     $("#chatOutput").html(text.replace(/\n/g, "<br />"));
+     $("#chatText").val("");
   }
+
 
   let game = <div></div>;
   if (props.gameToken) {
@@ -263,6 +263,8 @@ function GamePage(props) {
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
       });
+
+    channel.on("sendMsg", resp => {displayMessage(resp)[0]});
 
       console.log(props)
 

@@ -68,9 +68,19 @@ function CamMap(props){
 
   let markerList = _.map(allBuildings, function (x, ii) {
     console.log(x);
-    if(x.underAttack){
-      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} />
-    } else {
+    if(x.underAttack && (x.attacker.team == "team1") && (x.captured == false)){
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} icon={"/images/greenflag.png"}/>
+    }
+    if(x.captured && (x.attacker.team == "team1")){
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} icon={"/images/greenflag.png"}/>
+    }
+    if(x.underAttack && (x.attacker.team == "team2") (x.captured == false)){
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} icon={"/images/redflag.png"}/>
+    }  
+    if(x.captured && (x.attacker.team == "team2")){
+      return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} icon={"/images/redflag.png"}/>
+    }  
+    else {
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
     }
   });
