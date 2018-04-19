@@ -186,9 +186,7 @@ defmodule CaptureCampusWeb.GamesChannel do
 
   # chat functionality
   def handle_in("sendMsg", payload, socket) do
-    IO.inspect payload
-    IO.inspect socket
-    broadcast! socket, "sendMsg", %{"msg" => payload["message"]}
+    broadcast! socket, "sendMsg", %{"msg" => payload["message"], "srcTeam" => payload["team"]}
     {:noreply, socket}
   end
 
