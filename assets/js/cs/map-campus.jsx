@@ -76,10 +76,10 @@ function CamMap(props){
     }
     if(x.underAttack && (x.attacker.team == "team2") && (x.captured == false)){
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} animation={google.maps.Animation.BOUNCE} icon={"/images/redflag.png"}/>
-    }  
+    }
     if(x.captured && (x.owner == "team2")){
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} icon={"/images/redflag.png"}/>
-    }  
+    }
     else {
       return <Marker position={{lat: x.lat, lng: x.lng }} title={x.name} key={ii} />
     }
@@ -91,7 +91,7 @@ function CamMap(props){
   return  <CampusMap isMarkerShown={showMarker} markerList={markerList} posn={posn} />;
 
   } else {
-    return <div id="loading"><img src="https://i.redd.it/ounq1mw5kdxy.gif" height="50%"/><br/>Locating you...</div>
+    return <div id="loading"><img src="https://i.redd.it/ounq1mw5kdxy.gif" height="30%"/><br/>Locating you...</div>
   }
 
 
@@ -131,8 +131,12 @@ const CampusMap = compose(
         position={props.posn}
         icon={{
           path: google.maps.SymbolPath.CIRCLE,
-          strokeColor: "blue",
-          scale: 10
+          fillColor: '#1589FF',
+          fillOpacity: 1,
+          scale: 8,
+          strokeColor: '#1589FF',
+          strokeWeight: 10
+
         }}
       />
     )}
