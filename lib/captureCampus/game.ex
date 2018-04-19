@@ -240,7 +240,7 @@ defmodule CaptureCampus.Game do
     location = %{:lat => 0, :lng => 0}
     player = %{:user_id => user_id, :ko => false, :location => location}
 
-    allPlayers = team1 ++ team2
+    allPlayers = team1 ++ team2 || []
     dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
 
 
@@ -256,7 +256,7 @@ defmodule CaptureCampus.Game do
       end
     end
 
-    allPlayers = team1 ++ team2
+    allPlayers = team1 ++ team2 || []
     IO.inspect("ADDUSER")
     IO.inspect(length(allPlayers))
     IO.inspect(game.team_size)

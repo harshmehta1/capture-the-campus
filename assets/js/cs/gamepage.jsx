@@ -28,12 +28,12 @@ function GamePage(props) {
   let btn_panel = ko ?
       <div>
         <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
-        <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
+        <button onClick={() => validateLeaveGame()} className="btn btn-danger">Leave Game</button>
       </div> :
       <div>
        <button className="btn btn-warning" onClick={() => attack()}>Attack!</button>
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
-       <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
+       <button onClick={() => validateLeaveGame()} className="btn btn-danger">Leave Game</button>
       </div>;
 
   //also check for wins/losses here
@@ -281,8 +281,14 @@ function GamePage(props) {
     console.log(currentTeam)
   }
 
+
+  function validateLeaveGame(){
+    $("#leave-game").modal('show');
+  }
+
   function leaveGame()
   {
+
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
     channel.leave();
     joined=false;
@@ -353,13 +359,15 @@ function GamePage(props) {
       if(view.game.winner != "" && times == 0)
      {
        if(view.game.winner == currentTeam){
+         $('#victory-screen').modal({backdrop: 'static', keyboard: false})
          $("#victory-screen").modal('show');
        } else {
+         $('#defeat-screen').modal({backdrop: 'static', keyboard: false})
          $("#defeat-screen").modal('show');
        }
         // alert(view.game.winner + " Wins!");
         times = 1;
-        window.location = "/"
+        // window.location = "/"
       }
       else
       {
@@ -410,11 +418,11 @@ function GamePage(props) {
       <div className="attackProgressBar">
         {attackProgress}
       </div>
-      <div class="notifs">
-        <div className="attackNotifications" class="alert alert-danger" role="alert">
+      <div className="notifs">
+        <div className="attackNotifications" className="alert alert-danger" role="alert">
           {attackNotifs}
         </div>
-        <div className="messageNotifications" class="alert alert-light" role="alert">
+        <div className="messageNotifications" className="alert alert-light" role="alert">
           {messageNotifs}
           <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
         </div>
@@ -448,11 +456,11 @@ function GamePage(props) {
       <div className="modal fade" id="victory-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
-            <div className="modal-header">
-              <h5 className="modal-title">Game over</h5>
-            </div>
             <div className="modal-body">
+              <h5 className="modal-title text-center">Game Over!</h5>
+              <hr/>
               <h1 style={{color: '#179b20'}}> Victory! </h1>
+              <a href="/" className="btn btn-link">Back to Lobby</a>
             </div>
           </div>
         </div>
@@ -461,11 +469,28 @@ function GamePage(props) {
       <div className="modal fade" id="defeat-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
+            <div className="modal-body">
+              <h5 className="modal-title">Game Over!</h5>
+              <hr/>
+              <h1 style={{color: '#d1193d'}}> Defeat! </h1>
+              <a href="/" className="btn btn-link">Back to Lobby</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="modal fade" id="leave-game" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title">Game over</h5>
+              <h5 className="modal-title">Are you sure you want to quit?</h5>
             </div>
             <div className="modal-body">
-              <h1 style={{color: '#d1193d'}}> Defeat! </h1>
+              <p>You are trying to leave this game. This will be considered as a loss to you. Are you sure?</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-danger" onClick={() => leaveGame()}>Yes, I'm sure!</button>
+              <button type="button" class="btn btn-primary" data-dismiss="modal">No, Take me back!</button>
             </div>
           </div>
         </div>
