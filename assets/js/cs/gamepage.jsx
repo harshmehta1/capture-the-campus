@@ -16,7 +16,7 @@ let attacking = false;
 let currentTeam;
 let score = {team1: 0, team2: 0};
 let ko = false;
-var times = 0;
+let messageNotifs;
 
 function GamePage(props) {
   let attackPercentage = 0;
@@ -27,11 +27,9 @@ function GamePage(props) {
   let btn_panel = ko ?
       <div>
         <button className={"btn btn-success"} onClick={() => revive()}>Revive</button>
-        <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
         <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
       </div> :
       <div>
-       <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
        <button className="btn btn-warning" onClick={() => attack()}>Attack!</button>
        <button className="btn btn-info" id="defendBtn" onClick={() => defend()}>Defend</button>
        <button onClick={() => leaveGame()} className="btn btn-danger">Leave Game</button>
@@ -292,7 +290,6 @@ function GamePage(props) {
   {
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
     joined=false;
-    channel.leave()
     window.location = "/";
   }
 
@@ -308,6 +305,7 @@ function GamePage(props) {
        var text = resp.msg + "\n" + $('#chatOutput').html()
        $("#chatOutput").html(text.replace(/\n/g, "<br />"));
        $("#chatText").val("");
+       messageNotifs = "New Message " + resp.msg.substr(0, resp.msg.indexOf(":")) + " "; 
      }
   }
 
@@ -345,6 +343,7 @@ function GamePage(props) {
       });
     }
 
+
     console.log(attackNotifs)
 
 
@@ -355,30 +354,17 @@ function GamePage(props) {
     }
 
     function gotView(view){
-      if(view.game.winner != "" && times == 0)
-      {
-        alert(view.game.winner + " Wins!");
-        times = 1;
-        window.location = "/"
-      }
-      else
-      {
-        times = 0;
-        props.dispatch({
-          type: 'UPDATE_GAME_STATE',
-          data: view.game,
-        })
-      }
+      props.dispatch({
+        type: 'UPDATE_GAME_STATE',
+        data: view.game,
+      })
     }
 
     channel.on("sendMsg", resp => {displayMessage(resp)[0]});
 
     channel.on("attack_incoming", game => {
-      if(game.winner == "")
-      {
       channel.push("update_state", game)
         .receive("ok", gotView.bind(this))
-      }
     });
 
     channel.on("player_kod", resp => {
@@ -394,8 +380,14 @@ function GamePage(props) {
 
 
     channel.on("state_update", game => {
-      channel.push("update_state", game)
-        .receive("ok", gotView.bind(this))
+        if(game.winner != "")
+        {
+          alert(game.winner + " Wins!");
+          api.resetGameToken()
+          window.location = "/"
+        }
+        channel.push("update_state", game)
+          .receive("ok", gotView.bind(this))
       });
 
 
@@ -407,21 +399,29 @@ function GamePage(props) {
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings} status={props.game.status}/>
       </div>
-      <div className="attackNotifications">
-        {attackNotifs}
-      </div>
       <div className="attackProgressBar">
         {attackProgress}
+      </div>
+      <div class="notifs">
+        <div className="attackNotifications" class="alert alert-danger" role="alert">
+          {attackNotifs}
+        </div>
+        <div className="messageNotifications" class="alert alert-light" role="alert">
+          {messageNotifs}
+          <button type="button" className="btn btn-primary" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
+        </div>
       </div>
       <div className="buttonPanel">
         { btn_panel }
       </div>
 
+     // Attribution to GetBootstrap.com for the below modal template
+     // https://getbootstrap.com/docs/4.0/components/modal/
      <div className="modal fade" id="exampleModalLong" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
        <div className="modal-dialog" role="document">
          <div className="modal-content">
            <div className="modal-header">
-             <h5 className="modal-title" id="exampleModalLongTitle">Chat Box</h5>
+             <h5 className="modal-title" id="exampleModalLongTitle">Team Chat Box</h5>
              <button type="button" className="close" data-dismiss="modal" aria-label="Close">
                <span aria-hidden="true">&times;</span>
              </button>
