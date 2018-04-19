@@ -180,12 +180,6 @@ defmodule CaptureCampusWeb.GamesChannel do
     {:noreply, socket}
   end
 
-  def handle_in("new", payload, socket) do
-    game = Game.new(payload["channel_no"], payload["game_size"]
-    GameBackup.save(payload["channel_no"], Game.new(payload["channel_no"], payload["game_size"]))
-    broadcast! socket, "state_update", game
-    {:noreply, socket}
-  end
 
   # Add authorization logic here as required.
   defp authorized?(_payload) do

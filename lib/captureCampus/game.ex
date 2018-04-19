@@ -9,13 +9,11 @@ defmodule CaptureCampus.Game do
       buildings: Enum.take_random(buildingList(), game_size + 1),
       team1Attacks: [],
       team2Attacks: [],
-<<<<<<< HEAD
       status: "Waiting For Players",
       winner: "",
-=======
       team1BuildingsCaptured: [],
       team2BuildingsCaptured: [],
->>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
+
     }
   end
 
@@ -28,13 +26,10 @@ defmodule CaptureCampus.Game do
       buildings: game.buildings,
       team1Attacks: game.team1Attacks,
       team2Attacks: game.team2Attacks,
-<<<<<<< HEAD
       status: game.status,
       winner: game.winner,
-=======
       team1BuildingsCaptured: game.team1BuildingsCaptured,
       team2BuildingsCaptured: game.team2BuildingsCaptured,
->>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
     }
   end
 
@@ -47,13 +42,10 @@ defmodule CaptureCampus.Game do
       buildings: Map.get(game, "buildings"),
       team1Attacks: Map.get(game, "team1Attacks"),
       team2Attacks: Map.get(game, "team2Attacks"),
-<<<<<<< HEAD
       status: Map.get(game, "status"),
       winner: Map.get(game, "winner"),
-=======
       team1BuildingsCaptured: Map.get(game, "team1BuildingsCaptured"),
       team2BuildingsCaptured: Map.get(game, "team2BuildingsCaptured"),
->>>>>>> a72cc54a117a5f72ac554379672b4ad739334b85
     }
   end
 
@@ -114,25 +106,25 @@ defmodule CaptureCampus.Game do
         end
       end
     end
-    if (length(team1) + length(team2)) == game.team_size do
-      game = Map.put(game, :status, "start")
-    end
+    #if (length(team1) + length(team2)) == game.team_size do
+    #  game = Map.put(game, :status, "start")
+    #end
     game
   end
 
   def removePlayer(game, user_id) do
     team1 = Map.get(game, "team1")
     newTeam1 = Enum.filter(team1, fn(x) -> Map.get(x, "user_id")!=user_id end)
-    if (Map.get(game, "status") == "start") && (length(newTeam1) == 0) do
-      game = Map.put(game, "status", "Game Over!")
-      game = Map.put(game, "winner", "Team 2")
-    end
+    #if (Map.get(game, "status") == "start") && (length(newTeam1) == 0) do
+      #game = Map.put(game, "status", "Game Over!")
+      #game = Map.put(game, "winner", "Team 2")
+    #end
     team2 = Map.get(game, "team2")
     newTeam2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=user_id end)
-    if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
-      game = Map.put(game, "status", "Game Over!")
-      game = Map.put(game, "winner", "Team 1")
-    end
+    #if (Map.get(game, "status") == "start") && (length(newTeam2) == 0) do
+    #  game = Map.put(game, "status", "Game Over!")
+    #  game = Map.put(game, "winner", "Team 1")
+    #end
     game = Map.replace!(game, "team1", newTeam1)
     game = Map.replace!(game, "team2", newTeam2)
 

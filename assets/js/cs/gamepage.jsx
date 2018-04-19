@@ -263,8 +263,6 @@ function GamePage(props) {
         if(game.winner != "")
         {
           alert(game.winner + " Wins!");
-          joined = false;
-          channel.push("new", {channel_no: game.channel_no, game_size: game.game_size})
         }
         channel.push("update_state", game)
           .receive("ok", gotView.bind(this))
