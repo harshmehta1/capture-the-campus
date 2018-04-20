@@ -8,8 +8,11 @@ defmodule CaptureCampusWeb.GamesChannel do
   def join("games:" <> channel_no, %{"user_id" => user_id, "game_size" => game_size, "is_ranked" => is_ranked}, socket) do
     IO.inspect("JOIN")
     game = CaptureCampus.GameBackup.load(channel_no) || Game.new(channel_no, game_size, is_ranked)
-    game = Game.add_user(game, user_id)
-
+    if game.is_ranked do
+      game = Game.add_user(game, user_id)
+    else
+      game = Game.balancedAdd(game, user_id)
+    end
     IO.inspect(game)
     send(self, {:after_join, game})
     socket = socket

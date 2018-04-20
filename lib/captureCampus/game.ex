@@ -331,6 +331,74 @@ defmodule CaptureCampus.Game do
     game
   end
 
+  def balancedAdd(game, user_id) do
+    team1 = game.team1
+    team2 = game.team2
+    location = %{:lat => 0, :lng => 0}
+    player = %{"user_id" => user_id, "ko" => false, "location" => location}
+
+    allPlayers = team1 ++ team2
+    dupCheck = Enum.filter(allPlayers, fn(x) -> Map.get(x, "user_id") == user_id end)
+
+
+    if length(dupCheck) == 0 do
+      if length(team1) < div(game.team_size, 2) do
+        team1 = team1 ++ [player]
+        game = Map.replace!(game, :team1, team1)
+      else
+        if length(team2) < div(game.team_size, 2) do
+          team2 = team2 ++ [player]
+          game = Map.replace!(game, :team2, team2)
+        end
+      end
+      if game.team_size > 2 && length(team1) > 1 && length(team2) >= 1 do
+        IO.inspect team1 ++ team2
+        {team1, team2} = balanceTeams(team1, team2)
+        game = Map.replace!(game, :team1, team1)
+        game = Map.replace!(game, :team2, team2)
+      end
+    end
+    if (length(team1) + length(team2)) == game.team_size do
+      game = Map.put(game, :status, "start")
+    end
+    game
+  end
+
+  def balanceTeams(team1, team2) do
+    {best_player_id, _} = getStrongest(team1 ++ team2)
+    {worst_player_id, _} = getWeakest(team1 ++ team2)
+    best_player = Enum.find(team1 ++ team2, fn(x) -> Map.get(x, "user_id") == best_player_id end)
+    worst_player = Enum.find(team1 ++ team2, fn(x) -> Map.get(x, "user_id") == worst_player_id end)
+    if !((Enum.find(team1, fn(x) -> Map.get(x, "user_id") == best_player_id end) && Enum.find(team1, fn(x) -> Map.get(x, "user_id") == worst_player_id end)) ||
+         (Enum.find(team2, fn(x) -> Map.get(x, "user_id") == best_player_id end) && Enum.find(team2, fn(x) -> Map.get(x, "user_id") == worst_player_id end))) do
+      if Enum.find(team1,fn(x) -> Map.get(x, "user_id") == best_player_id end) do
+        team2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=worst_player_id end)
+        some_other_player = Enum.find(team1, fn(x) -> Map.get(x, "user_id") != best_player_id end)
+        team1 = Enum.filter(team1, fn(y) -> Map.get(y, "user_id")!=Map.get(some_other_player, "user_id") end)
+        team1 = team1 ++ [worst_player]
+        team2 = team2 ++ [some_other_player]
+      else
+        team1 = Enum.filter(team1, fn(y) -> Map.get(y, "user_id")!=worst_player_id end)
+        some_other_player = Enum.find(team2, fn(x) -> Map.get(x, "user_id") != best_player_id end)
+        team2 = Enum.filter(team2, fn(y) -> Map.get(y, "user_id")!=Map.get(some_other_player, "user_id") end)
+        team2 = team2 ++ [worst_player]
+        team1 = team1 ++ [some_other_player]
+      end
+    end
+    {team1, team2}
+  end
+
+  def getStrongest(team) do
+    wins = Enum.map(team, fn(x) -> user = Users.get_user!(Map.get(x, "user_id")); {user.id, user.wins} end)
+    best_player = Enum.max_by(wins, fn({id, wins}) -> wins end)
+    best_player
+  end
+
+  def getWeakest(team) do
+    wins = Enum.map(team, fn(x) -> user = Users.get_user!(Map.get(x, "user_id")); {user.id, user.wins} end)
+    worst_player = Enum.min_by(wins, fn({id, wins}) -> wins end)
+    worst_player
+  end
 
   def addPlayer(user_id, state) do
     team1 = state.team1
