@@ -29,13 +29,15 @@ function GamePage(props) {
 
   let btn_panel = ko ?
       <div>
-        <button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button><br/>
-        <button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button><br/>
+        <span><button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button></span>
+        <span><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></span>
+        <span><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></span>
       </div> :
       <div>
-       <button className="btn btn-warning btn-panel" onClick={() => attack()}>Attack!</button><br/>
-       <button className="btn btn-info btn-panel" id="defendBtn" onClick={() => defend()}>Defend</button><br/>
-       <button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button><br/>
+       <span><button className="btn btn-warning btn-panel" onClick={() => attack()}>Attack!</button></span>
+       <span><button className="btn btn-info btn-panel" id="defendBtn" onClick={() => defend()}>Defend</button></span>
+       <span><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></span>
+       <span><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></span>
       </div>;
 
   function revive() {
@@ -452,26 +454,26 @@ function GamePage(props) {
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings} status={props.game.status}/>
       </div>
-      <div className="game-alert-notifications">
+      <div className="attackProgressBar">
+        {attackProgress}
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
           Sample
         </div>
-      </div>
-      <div className="attackProgressBar">
-        {attackProgress}
       </div>
       <div className="notifs">
         <div className="attackNotifications" className="alert alert-danger" role="alert">
           {attackNotifs}
         </div>
       </div>
-        <div className="alert alert-light messageNotifications" role="alert">
-          {messageNotifs}
-          <button type="button" className="btn btn-primary chat-btn" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button>
-        </div>
-      <div className="buttonPanel">
-        { btn_panel }
+      <div className="alert alert-light messageNotifications" role="alert">
+        {messageNotifs}
       </div>
+      <div className="btn-wrapper">
+        <div className="buttonPanel">
+          { btn_panel }
+        </div>
+      </div>
+
 
      // Attribution to GetBootstrap.com for the below modal template
      // https://getbootstrap.com/docs/4.0/components/modal/
