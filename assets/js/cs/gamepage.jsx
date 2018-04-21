@@ -44,12 +44,12 @@ function GamePage(props) {
             <div className="panel-wrapper"><button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button></div>
           </div>
           <div className="col">
-            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></div>
+            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Chat</button></div>
           </div>
         </div>
         <div className="row">
           <div className="col">
-            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></div>
+            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Forfeit</button></div>
           </div>
         </div>
       </div> :
@@ -64,10 +64,10 @@ function GamePage(props) {
         </div>
         <div className="row">
           <div className="col">
-            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></div>
+            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Chat</button></div>
           </div>
           <div className="col">
-            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></div>
+            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Forfeit</button></div>
           </div>
         </div>
       </div>;
@@ -145,7 +145,7 @@ function GamePage(props) {
     })
     alert_msg = thisAtk;
     console.log(alert_msg)
-    // $("#game-alert-box").html(alert_msg);
+    $("#game-alert-box").html(alert_msg);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
 
@@ -154,7 +154,7 @@ function GamePage(props) {
   function attack(){
     console.log("ATTACK")
     let currLoc = {};
-    let thisAtk = "";
+    let thisAtk = <div></div>;
     navigator.geolocation.getCurrentPosition(function(pos){
       currLoc.lat = pos.coords.latitude;
       currLoc.lng = pos.coords.longitude;
@@ -219,7 +219,7 @@ function GamePage(props) {
     console.log(thisAtk)
     alert_msg = thisAtk;
     console.log(alert_msg)
-    // $("#game-alert-box").html(alert_msg);
+    $("#game-alert-box").html(thisAtk);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
 
@@ -432,7 +432,7 @@ console.log("JOINED"+joined)
       }
     }
 
-    console.log(alert_msg)
+    console.log("ALERT!"+alert_msg)
     if(alert_msg == ""){
       $("#game-alert-box").hide();
     }
@@ -553,7 +553,7 @@ console.log("JOINED"+joined)
         <div className="modal-dialog" role="document">
           <div className="modal-content">
             <div className="modal-body">
-              <h5 className="modal-title"><img src="https://i.redd.it/ounq1mw5kdxy.gif" width="120px"/></h5>
+              <h5 className="modal-title"><img src="https://i.redd.it/ounq1mw5kdxy.gif" id="modal-loading"/></h5>
               <h4> Waiting for all players to connect! </h4><br/>
               <button onClick={() => leaveGame()} className="btn btn-danger">I don't want to wait</button>
             </div>
