@@ -401,6 +401,13 @@ function GamePage(props) {
 
       console.log(props)
 
+      if(props.game.status == "Waiting For Players"){
+        $('#waiting-screen').modal({backdrop: 'static', keyboard: false})
+        $("#waiting-screen").modal('show');
+      } else {
+        $("#waiting-screen").modal('hide');
+      }
+
 
 
     return <div>
@@ -471,6 +478,18 @@ function GamePage(props) {
         </div>
       </div>
 
+      <div className="modal fade" id="waiting-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <h5 className="modal-title"><img src="https://i.redd.it/ounq1mw5kdxy.gif" width="120px"/></h5>
+              <h4> Waiting for all players to connect! </h4><br/>
+              <button onClick={() => leaveGame()} className="btn btn-danger">I don't want to wait</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="modal fade" id="leave-game" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
         <div className="modal-dialog" role="document">
           <div className="modal-content">
@@ -480,9 +499,9 @@ function GamePage(props) {
             <div className="modal-body">
               <p><b>You are trying to leave this game!</b> This will be considered as a <b>loss</b> to you. Are you sure?</p>
             </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger" onClick={() => leaveGame()}>Yes, I'm sure!</button>
-              <button type="button" class="btn btn-primary" data-dismiss="modal">No, Take me back!</button>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-danger" onClick={() => leaveGame()}>Yes, I'm sure!</button>
+              <button type="button" className="btn btn-primary" data-dismiss="modal">No, Take me back!</button>
             </div>
           </div>
         </div>
