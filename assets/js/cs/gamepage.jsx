@@ -426,7 +426,7 @@ function GamePage(props) {
     if(alert_msg == ""){
       $("#game-alert-box").hide();
     } else {
-      $("#game-alert-box").html(alert_msg);
+      // $("#game-alert-box").html(alert_msg);
       $("#game-alert-box").show();
       setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
     }
@@ -481,7 +481,7 @@ function GamePage(props) {
       <div className="attackProgressBar">
         {attackProgress}
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
-          Sample
+          <p>alert_msg</p>
         </div>
         <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
           {attackNotifs}
@@ -497,8 +497,6 @@ function GamePage(props) {
       </div>
 
 
-     // Attribution to GetBootstrap.com for the below modal template
-     // https://getbootstrap.com/docs/4.0/components/modal/
      <div className="modal fade" id="exampleModalLong" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
        <div className="modal-dialog" role="document">
          <div className="modal-content">
@@ -598,6 +596,9 @@ function GamePage(props) {
   }
 
   // return game;
+  // Attribution to GetBootstrap.com for the below modal template
+  // https://getbootstrap.com/docs/4.0/components/modal/
+
 
 }
 
