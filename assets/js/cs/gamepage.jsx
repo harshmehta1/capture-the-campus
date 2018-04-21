@@ -378,7 +378,14 @@ console.log("JOINED"+joined)
     if(currentTeam == "team1"){
       var team2Atks = props.game.team2Attacks;
       attackNotifs = _.map(team2Atks, function(x){
-        return <div><p>{x.name} is under attack! You have {attackTimer} seconds to defend the building!</p></div>;
+        var tl1 = 60;
+        var countownTimer1 = setInterval(function(){
+            tl1--;
+            document.getElementById("countdown1").textContent = tl1;
+          if(tl1 <= 0)
+            clearInterval(countdownTimer1);
+          },1000);
+        return <div><p>TEAM 2 is attacking building {x.name}. You have <span id="countdown1">60</span> seconds to defend the building!</p></div>;
       });
       if(attackNotifs.length > 0){
         attack_msg = "ongoing";
@@ -389,7 +396,14 @@ console.log("JOINED"+joined)
     } else {
       var team1Atks = props.game.team1Attacks;
       attackNotifs = _.map(team1Atks, function(x){
-        return <div><p>{x.name} is under attack! You have {attackTimer} seconds to defend the building!</p></div>;
+        var tl2 = 60;
+        var countownTimer2 = setInterval(function(){
+            tl2--;
+            document.getElementById("countdown2").textContent = tl2;
+          if(tl2 <= 0)
+            clearInterval(countdownTimer2);
+          },1000);
+        return <div><p>TEAM 1 is attacking building {x.name}. You have <span id="countdown2">60</span> seconds to defend the building!</p></div>;
       });
       if(attackNotifs.length > 0){
         attack_msg = "ongoing";
