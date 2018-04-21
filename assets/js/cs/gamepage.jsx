@@ -28,16 +28,38 @@ function GamePage(props) {
   console.log(props)
 
   let btn_panel = ko ?
-      <div>
-        <span><button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button></span>
-        <span><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></span>
-        <span><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></span>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <div className="panel-wrapper"><button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button></div>
+          </div>
+          <div className="col">
+            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></div>
+          </div>
+        </div>
       </div> :
-      <div>
-       <span><button className="btn btn-warning btn-panel" onClick={() => attack()}>Attack!</button></span>
-       <span><button className="btn btn-info btn-panel" id="defendBtn" onClick={() => defend()}>Defend</button></span>
-       <span><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></span>
-       <span><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></span>
+      <div className="container">
+        <div className="row">
+          <div className="col">
+            <div className="panel-wrapper"><button className="btn btn-warning btn-panel" onClick={() => attack()}>Attack!</button></div>
+          </div>
+          <div className="col">
+            <div className="panel-wrapper"><button className="btn btn-info btn-panel" id="defendBtn" onClick={() => defend()}>Defend</button></div>
+          </div>
+        </div>
+        <div className="row">
+          <div className="col">
+            <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Launch Chat</button></div>
+          </div>
+          <div className="col">
+            <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Leave Game</button></div>
+          </div>
+        </div>
       </div>;
 
   function revive() {
