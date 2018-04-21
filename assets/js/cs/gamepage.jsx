@@ -20,11 +20,20 @@ let messageNotifs;
 var times = 0;
 
 
+let gtoken = JSON.parse(localStorage.getItem("gameToken")); //caching the channel no for reconnection.
+
 function GamePage(props) {
   let attackPercentage = 0;
   // score = updateScore();
   let alert_msg = "";
   let attack_msg = "";
+
+  if(gtoken && !joined){
+    store.dispatch({
+        type: 'SET_GAME_TOKEN',
+        game_token: gtoken,
+      })
+  }
 
   console.log(props)
 
@@ -293,9 +302,10 @@ function GamePage(props) {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
     return earthRadiusMeters * c;
   }
-
+console.log("JOINED"+joined)
   function joinChannel(){
-    localStorage.setItem("channelNo", props.gameToken.channel_no); //caching the channel no for reconnection.
+    console.log("TRYING TO JOIUN")
+    localStorage.setItem("gameToken", JSON.stringify(props.gameToken)); //caching the channel no for reconnection.
     channel.join()
       .receive("ok", resp => { console.log("Joined successfully"), getCurrentTeam(resp) })
       .receive("error", resp => { console.log("Unable to join", resp) });
@@ -324,7 +334,7 @@ function GamePage(props) {
 
   function leaveGame()
   {
-
+    localStorage.removeItem("gameToken");
     channel.push("deleteUser", {user_id: props.user.user_id, game_size: props.gameToken.game_size, game: props.game})
     channel.leave();
     joined=false;
@@ -425,10 +435,6 @@ function GamePage(props) {
     console.log(alert_msg)
     if(alert_msg == ""){
       $("#game-alert-box").hide();
-    } else {
-      // $("#game-alert-box").html(alert_msg);
-      $("#game-alert-box").show();
-      setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
     }
 
     if(attackNotifs.length == 0){
@@ -481,7 +487,7 @@ function GamePage(props) {
       <div className="attackProgressBar">
         {attackProgress}
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
-          <p>alert_msg</p>
+          <p>{alert_msg}</p>
         </div>
         <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
           {attackNotifs}
