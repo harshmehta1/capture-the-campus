@@ -92,7 +92,7 @@ function GamePage(props) {
     })
     alert_msg = thisAtk;
     console.log(alert_msg)
-    $("#game-alert-box").html(alert_msg);
+    // $("#game-alert-box").html(alert_msg);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
 
@@ -136,7 +136,7 @@ function GamePage(props) {
     })
     alert_msg = thisAtk;
     console.log(alert_msg)
-    $("#game-alert-box").html(alert_msg);
+    // $("#game-alert-box").html(alert_msg);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
 
@@ -210,7 +210,7 @@ function GamePage(props) {
     console.log(thisAtk)
     alert_msg = thisAtk;
     console.log(alert_msg)
-    $("#game-alert-box").html(alert_msg);
+    // $("#game-alert-box").html(alert_msg);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
 
