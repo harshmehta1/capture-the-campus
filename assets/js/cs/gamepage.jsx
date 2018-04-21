@@ -219,11 +219,12 @@ function GamePage(props) {
     console.log(thisAtk)
     alert_msg = thisAtk;
     console.log(alert_msg)
-    $("#game-alert-box").html(thisAtk);
+    document.getElementById("game-alert-box").innerHTML = thisAtk;
+    // $("#game-alert-box").html(thisAtk);
     $("#game-alert-box").show();
     setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
-
   }
+
   var attackTimer = 0;
   var atkInterval;
 
