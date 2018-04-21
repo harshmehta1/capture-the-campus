@@ -47,17 +47,33 @@ export default function Lobby(props) {
       <div className="col game-fn">
         <h4>Select a PvP game to play:</h4>
         <div className="form-group">
-          <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="2"/><h2>1v1</h2></label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="4"/><h2>2v2</h2></label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="6"/><h2>3v3</h2></label>
-          <label className="radio-inline" style={{marginLeft:20}}><input type="radio" name="pvp" value="8"/><h2>4v4</h2></label><br/>
-          <Link to="/game"><Button className="btn-xl btn-warning" onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Ranked Match</Button></Link>
-          <Link to="/game"><Button className="btn-xl btn-warning" onClick={() => api.findunrankedMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Find Unranked Match</Button></Link>
+          <div className="row">
+            <div className="col-sm-3">
+              <label className="radio-inline" style={{marginTop:10}}><input type="radio" name="pvp" value="2"/><h2>1v1</h2></label>
+            </div>
+            <div className="col-sm-3">
+              <label className="radio-inline"><input type="radio" name="pvp" value="4"/><h2>2v2</h2></label>
+            </div>
+            <div className="col-sm-3">
+              <label className="radio-inline"><input type="radio" name="pvp" value="6"/><h2>3v3</h2></label>
+            </div>
+            <div className="col-sm-3">
+              <label className="radio-inline"><input type="radio" name="pvp" value="8"/><h2>4v4</h2></label><br/>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-6 btn-panel">
+              <Link to="/game"><Button className="col btn-xl btn-info"
+                onClick={() => api.findMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Play Ranked</Button></Link>
+            </div>
+            <div className="col-sm-6 btn-panel">
+              <Link to="/game"><Button className="col btn-xl btn-warning"
+                onClick={() => api.findunrankedMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Play Unranked</Button></Link>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
-
     </div>;
 
   // let tasks = _.map(params.tasks, (pp) => <Task key={pp.id} user={params.user} task={pp} />);
