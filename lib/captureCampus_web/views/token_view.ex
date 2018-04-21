@@ -3,6 +3,7 @@ defmodule CaptureCampusWeb.TokenView do
 
   def render("token.json", %{user: user, token: token}) do
     %{
+      user_name: user.name,
       user_id: user.id,
       token: token,
     }

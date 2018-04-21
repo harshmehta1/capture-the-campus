@@ -332,7 +332,7 @@ function GamePage(props) {
 
   function sendMessage()
   {
-    channel.push("sendMsg", {message: "From " + props.user.user_id + ": " + $('#chatText').val(), team: currentTeam})
+    channel.push("sendMsg", {message: props.user.user_name + ": " + $('#chatText').val(), team: currentTeam})
   }
 
 
@@ -342,7 +342,7 @@ function GamePage(props) {
        var text = resp.msg + "\n" + $('#chatOutput').html()
        $("#chatOutput").html(text.replace(/\n/g, "<br />"));
        $("#chatText").val("");
-       messageNotifs = "New Message " + resp.msg.substr(0, resp.msg.indexOf(":")) + " ";
+       messageNotifs = "New Message From" + resp.msg.substr(0, resp.msg.indexOf(":")) + " ";
      }
   }
 
@@ -367,26 +367,12 @@ function GamePage(props) {
     if(currentTeam == "team1"){
       var team2Atks = props.game.team2Attacks;
       attackNotifs = _.map(team2Atks, function(x){
-        var tl1 = 60;
-        var countownTimer1 = setInterval(function(){
-            tl1--;
-            document.getElementById("countdown1").textContent = tl1;
-          if(tl1 <= 0)
-            clearInterval(countdownTimer1);
-          },1000);
-        return <div><p>TEAM 2 is attacking building {x.name}. You have <span id="countdown1">60</span> seconds to defend the building!</p></div>;
+        return <div><p>TEAM 2 is attacking building {x.name}. You have {attackTimer} seconds to defend the building!</p></div>;
       });
     } else {
       var team1Atks = props.game.team1Attacks;
       attackNotifs = _.map(team1Atks, function(x){
-        var tl2 = 60;
-        var countownTimer2 = setInterval(function(){
-            tl2--;
-            document.getElementById("countdown2").textContent = tl2;
-          if(tl2 <= 0)
-            clearInterval(countdownTimer2);
-          },1000);
-        return <div><p>TEAM 1 is attacking building {x.name}. You have <span id="countdown2">60</span> seconds to defend the building!</p></div>;
+        return <div><p>TEAM 1 is attacking building {x.name}. You have {attackTimer} seconds to defend the building!</p></div>;
       });
     }
 
