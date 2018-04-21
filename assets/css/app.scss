@@ -70,17 +70,18 @@ html, body {
 @media screen and (max-width:850px) {
   .buttonPanel {
 
-    table-layout: none;
-
+    // table-layout: none;
+    // padding: 0;
+    height:20%;
     margin-left: 0;
     background-color: rgba(255, 255, 255, 0.8);
     float: left;
     margin-right: 0;
 
     border-radius: 25px;
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: auto auto;
+    // display: grid;
+    // grid-template-columns: auto auto;
+    // grid-template-rows: auto auto;
 
     text-align: center;
     color: white;
@@ -93,6 +94,7 @@ html, body {
     border-radius: 10px;
     width: 100%;
     height: 100%;
+    // background-color: black;
     // width: 100%;
     font-weight: bold;
     font-size: 0.8vm;
@@ -140,7 +142,7 @@ html, body {
   top: 0;
   left: 0;
   margin-top: 4%;
-  height: 10%;
+  height: 20%;
   position: fixed;
   width: 100%;
   text-align: center;
@@ -148,7 +150,7 @@ html, body {
 }
 
 .attack-bar {
-  height: 50%;
+  height: 30%;
   margin: 0 auto;
   margin-bottom:5px;
   width: 80%;
@@ -156,8 +158,8 @@ html, body {
   border-radius: 25px;
 }
 
-#game-alert-box {
-  height: 100%;
+#game-alert-box, #attack-alert-box {
+  height: 50%;
   margin: 0 auto;
   width: 80%;
   // font-weight: bold;
@@ -165,6 +167,7 @@ html, body {
   // border: solid 5px #ffae42;
   border-radius: 25px;
 }
+
 
 #attackBar {
   height: 100%;

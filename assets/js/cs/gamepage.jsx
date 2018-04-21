@@ -24,11 +24,12 @@ function GamePage(props) {
   let attackPercentage = 0;
   // score = updateScore();
   let alert_msg = "";
+  let attack_msg = "";
 
   console.log(props)
 
   let btn_panel = ko ?
-      <div className="container">
+      <div className="container-fluid">
         <div className="row">
           <div className="col">
             <div className="panel-wrapper"><button className={"btn btn-success btn-panel"} onClick={() => revive()}>Revive</button></div>
@@ -367,16 +368,27 @@ function GamePage(props) {
     if(currentTeam == "team1"){
       var team2Atks = props.game.team2Attacks;
       attackNotifs = _.map(team2Atks, function(x){
-        return <div><p>TEAM 2 is attacking building {x.name}. You have {attackTimer} seconds to defend the building!</p></div>;
+        return <div><p>{x.name} is under attack! You have {attackTimer} seconds to defend the building!</p></div>;
       });
+      if(attackNotifs.length > 0){
+        attack_msg = "ongoing";
+        // $("#attack-alert-box").html(attackNotifs);
+        $("#attack-alert-box").show();
+        // setTimeout(function(){ $("#attack-alert-box").hide(); attack_msg = ""; }, 2000);
+      }
     } else {
       var team1Atks = props.game.team1Attacks;
       attackNotifs = _.map(team1Atks, function(x){
-        return <div><p>TEAM 1 is attacking building {x.name}. You have {attackTimer} seconds to defend the building!</p></div>;
+        return <div><p>{x.name} is under attack! You have {attackTimer} seconds to defend the building!</p></div>;
       });
+      if(attackNotifs.length > 0){
+        attack_msg = "ongoing";
+        // $("#attack-alert-box").html(attackNotifs);
+        $("#attack-alert-box").show();
+        // setTimeout(function(){ $("#attack-alert-box").hide(); attack_msg = ""; }, 2000);
+      }
     }
-
-
+    console.log("Attack MESSAGE: "+attack_msg)
     console.log(attackNotifs)
 
 
@@ -416,7 +428,11 @@ function GamePage(props) {
     } else {
       $("#game-alert-box").html(alert_msg);
       $("#game-alert-box").show();
-      setTimeout(function(){ $("#game-alert-box").alert("close"); alert_msg = ""; }, 1000);
+      setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+    }
+
+    if(attackNotifs.length == 0){
+      $("#attack-alert-box").hide();
     }
 
     channel.on("sendMsg", resp => {displayMessage(resp)[0]});
@@ -467,9 +483,7 @@ function GamePage(props) {
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
           Sample
         </div>
-      </div>
-      <div className="notifs">
-        <div className="attackNotifications" className="alert alert-danger" role="alert">
+        <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
           {attackNotifs}
         </div>
       </div>
