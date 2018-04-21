@@ -21,7 +21,7 @@ let Session = connect(({token}) => {return {token};})((props) => {
 
   // let user_name = "demo";
   return <div className="navbar-text">
-          Welcome, User { props.token.user_id } | <Button className="btn btn-primary" onClick={logout}>Log out</Button>
+          Welcome, { props.token.user_name } | <Button className="btn btn-primary" onClick={logout}>Log out</Button>
         </div>;
   });
 
