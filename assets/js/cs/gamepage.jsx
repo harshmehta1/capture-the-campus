@@ -23,6 +23,7 @@ var times = 0;
 function GamePage(props) {
   let attackPercentage = 0;
   // score = updateScore();
+  let alert_msg = "";
 
   console.log(props)
 
@@ -40,6 +41,7 @@ function GamePage(props) {
   function revive() {
     console.log("REVIVE")
     let currLoc = {};
+    let thisAtk = "";
     if(!ko) {
       alert("user is already alive")
       return;
@@ -52,7 +54,8 @@ function GamePage(props) {
       //let snell = props.game.reviveBuilding;
       const snell = {lat: 42.338396, lng: -71.088071}
       if(!(distanceInKmBetweenEarthCoordinates(currLoc.lat, currLoc.lng, snell.lat, snell.lng) < 90)) {
-        alert("not close enough to snell")
+        // alert("not close enough to snell")
+        thisAtk = "Sorry! You need to be near Snell Library to revive yourself!";
         return;
       }
       else {
@@ -62,12 +65,19 @@ function GamePage(props) {
         // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
       }
     })
+    alert_msg = thisAtk;
+    console.log(alert_msg)
+    $("#game-alert-box").html(alert_msg);
+    $("#game-alert-box").show();
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+
   }
 
 
   function defend(){
     console.log("DEFEND")
     let currLoc = {};
+    let thisAtk = "";
     navigator.geolocation.getCurrentPosition(function(pos){
       currLoc.lat = pos.coords.latitude;
       currLoc.lng = pos.coords.longitude;
@@ -84,7 +94,8 @@ function GamePage(props) {
       });
       console.log(defendableBuildings)
       if(!defendableBuildings[0]) {
-        alert("no building nearby to defend")
+        thisAtk = "No buildings to defend nearby!";
+        // alert("no building nearby to defend")
         return
       } else {
         var dBuilding = defendableBuildings[0];
@@ -98,11 +109,18 @@ function GamePage(props) {
         channel.push("ko", {user_id: attackerId});
       }
     })
+    alert_msg = thisAtk;
+    console.log(alert_msg)
+    $("#game-alert-box").html(alert_msg);
+    $("#game-alert-box").show();
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+
   }
 
   function attack(){
     console.log("ATTACK")
     let currLoc = {};
+    let thisAtk = "";
     navigator.geolocation.getCurrentPosition(function(pos){
       currLoc.lat = pos.coords.latitude;
       currLoc.lng = pos.coords.longitude;
@@ -132,18 +150,22 @@ function GamePage(props) {
         locationFin = locationDisList[0];
         attackable = true;
       } else {
-        alert("You are not close enough to any building to attack it!");
+        console.log("ALERT")
+        console.log(alert_msg)
+        // alert("You are not close enough to any building to attack it!");
+        thisAtk = "You are not close enough to any building to attack it!";
       }
 
+      console.log(alert_msg)
       if(attackable){
         console.log("ATTACKER")
         console.log(locationFin.attacker.team)
         if(locationFin.captured){
-          alert("You cannot capture that building!");
-        } else if(locationFin.attacker.user_id == props.user.user_id) {
-          alert("You are already attacking that building!");
+          thisAtk = "Building is already captured. You cannot capture that building!";
         } else if (locationFin.attacker.team != null && locationFin.attacker.team != currentTeam){
-          alert("Enemy team is attacking this building. You can Defend this building by pressing the 'Defend' button");
+          thisAtk = "Enemy team is attacking this building. You can Defend this building by pressing the 'Defend' button";
+        } else if(locationFin.attacker.user_id != null) {
+          thisAtk = "Building is already under attack!";
         } else {
         var currTime = new Date();
         currTime.setMinutes(currTime.getMinutes()+1);
@@ -160,6 +182,13 @@ function GamePage(props) {
       }
       }
     })
+    console.log(thisAtk)
+    alert_msg = thisAtk;
+    console.log(alert_msg)
+    $("#game-alert-box").html(alert_msg);
+    $("#game-alert-box").show();
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+
   }
   var attackTimer = 0;
   var atkInterval;
@@ -371,6 +400,15 @@ function GamePage(props) {
       }
     }
 
+    console.log(alert_msg)
+    if(alert_msg == ""){
+      $("#game-alert-box").hide();
+    } else {
+      $("#game-alert-box").html(alert_msg);
+      $("#game-alert-box").show();
+      setTimeout(function(){ $("#game-alert-box").alert("close"); alert_msg = ""; }, 1000);
+    }
+
     channel.on("sendMsg", resp => {displayMessage(resp)[0]});
 
     channel.on("attack_incoming", game => {
@@ -388,7 +426,7 @@ function GamePage(props) {
         $("#attackBar").css("width",0+"%");
         $("#attackBar").html(0+"%");
         ko = true;
-        alert("You have been KNOCKED OUT! Go to Snell Library to revive yourself!");
+        $("#revive-screen").modal('show');
       }
     })
 
@@ -413,6 +451,11 @@ function GamePage(props) {
     return <div>
       <div className="googleMaps">
         <CamMap buildings={props.game.buildings} status={props.game.status}/>
+      </div>
+      <div className="game-alert-notifications">
+        <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
+          Sample
+        </div>
       </div>
       <div className="attackProgressBar">
         {attackProgress}
@@ -502,6 +545,21 @@ function GamePage(props) {
             <div className="modal-footer">
               <button type="button" className="btn btn-danger" onClick={() => leaveGame()}>Yes, I'm sure!</button>
               <button type="button" className="btn btn-primary" data-dismiss="modal">No, Take me back!</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div className="modal fade" id="revive-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <h5 className="modal-title">KNOCKED OUT!</h5>
+              <hr/>
+              <h4>You have been <b style={{color: '#d1193d'}}>KNOCKED OUT!</b></h4>
+              <h5>Go to <i>Snell Library</i> to revive yourself!</h5>
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-dismiss="modal">Okay</button>
             </div>
           </div>
         </div>
