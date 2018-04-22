@@ -190,7 +190,7 @@ function GamePage(props) {
         // console.log("ALERT")
         // console.log(alert_msg_notif)
         // alert("You are not close enough to any building to attack it!");
-        thisAtk = "You are not close enough to any building to attack it!";
+        thisAtk = "Not close enough.";
       }
 
       console.log(alert_msg_notif)
