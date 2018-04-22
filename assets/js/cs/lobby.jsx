@@ -93,20 +93,85 @@ export default function Lobby(props) {
           </button>
         </div>
           <div className="modal-body">
-            <ol>
-              <li style={{padding: '3px'}}>Select a gamemode (ranked vs unranked) and a game size (1, 2, 3 or 4 person teams)</li>
-              <li style={{padding: '3px'}}>Wait for all players to join the game</li>
-              <li style={{padding: '3px'}}>The game will take a few seconds to get your position</li>
-              <li style={{padding: '3px'}}>Your team's points are equal to the number of buildings you have captured</li>
-              <li style={{padding: '3px'}}>The buildings' names are noted in a box on-screen</li>
-              <li style={{padding: '3px'}}>To capture a building, you must go close enough to it and press the "Attack!" button (in the bottom right) to start an on-screen countdown</li>
-              <li style={{padding: '3px'}}>After a minute, the countdown will be over and the building will be under your team's control</li>
-              <li style={{padding: '3px'}}>If you notice an opponent capturing a building, you can go to that building and press the "Defend" button. Doing so will interrupt the opponent's capture and knock out that specific player. This can happen to you while you're capturing a building!</li>
-              <li style={{padding: '3px'}}>If you are knocked out, you cannot attack or defend buildings. You must go to Snell Library and revive yourself by pressing the "Revive" button</li>
-              <li style={{padding: '3px'}}>To win a game, a team must capture all three of the target buildings</li>
-              <li style={{padding: '3px'}}>Additionally, a team can forfeit with the "Forfeit" button, granting the other team the victory</li>
-              <li style={{padding: '3px'}}>To chat with your team, press the "Chat" button to open up the chat-box</li>
-            </ol>
+            <h5>How to start:</h5>
+              <li>Select a Game Size > Select a Game mode:
+                <ul>
+                  <li>Ranked: Pairs you up with people in YOUR rank range.</li>
+                  <li>Unranked: Pairs you up with people in ANY rank range.</li>
+                </ul>
+              </li>
+              <li>Once you pick a mode, you'll be redirected to the game.</li>
+              <li>When the game is full, the game will begin.</li><br/>
+            <h5>Objective:</h5>
+              <li>Your <b>objective</b> is to capture as many buildings as you can!</li>
+              <li>Game ends when all the buildings have been captured</li>
+              <li>Your team's score = number of buildings you have captured</li><br/>
+            <h5>How to win:</h5>
+              <li>You win when:
+                <ul>
+                  <li>You have captured all the buildings.</li>
+                  <li>Your team's score is greater than the opponents when the game ends.</li>
+                </ul>
+              </li>
+            <h5>Game Controls: </h5>
+                  <li>Attack:
+                    <ul>
+                      <li>This button lets you capture a building.</li>
+                      <li>On pressing the button, a timer for one minute will begin.</li>
+                      <li>Upon completion, you will have captured that building.</li>
+                      <li>You cannot leave the bulding area till the timer has expired</li>
+                    </ul>
+                  </li>
+                  <li>Defend:
+                    <ul>
+                      <li>
+                        If a building is under attack, you can go near it and press the "Defend" button.
+                      </li>
+                      <li>
+                        This will stop the attack and knock out your opponent!
+                      </li>
+                      <li>
+                        (Hint: You might want to be careful when you attack too.) ;)
+                      </li>
+                    </ul>
+                  </li>
+                  <li>Buildings:
+                    <ul>
+                      <li>
+                        This button opens up a pop up that shows the building names with their statuses.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>Revive:
+                    <ul>
+                      <li>
+                        This button will only visible when you're Knocked Out.
+                      </li>
+                      <li>
+                        You must go to "Snell Libray" and press the button to revive yourself.
+                      </li>
+                    </ul>
+                  </li>
+                  <li>Chat:
+                    <ul>
+                      <li>
+                        This button opens up team chat.
+                      </li>
+                      <li>
+                        Talk to your teammates, form a strategy or just go nuts!
+                      </li>
+                    </ul>
+                  </li>
+                  <li>Forfeit:
+                    <ul>
+                      <li>
+                        If at any point, you want to leave the game, you can press this button.
+                      </li>
+                      <li>
+                        Note: If you do this, the system will register this as a defeat for you.
+                      </li>
+                    </ul>
+                  </li>
           </div>
         </div>
       </div>
@@ -114,6 +179,14 @@ export default function Lobby(props) {
 
     </div>;
 
+    // <li>The buildings names and status can be viewed by pressing the "Buildings" button</li>
+    // <li>To capture a building, you must go close enough to it and press the "Attack!" button (in the bottom right) to start an on-screen countdown</li>
+    // <li>After a minute, the countdown will be over and the building will be under your team's control</li>
+    // <li>If you notice an opponent capturing a building, you can go to that building and press the "Defend" button. Doing so will interrupt the opponent's capture and knock out that specific player. This can happen to you while you're capturing a building!</li>
+    // <li>If you are knocked out, you cannot attack or defend buildings. You must go to Snell Library and revive yourself by pressing the "Revive" button</li>
+    // <li>To win a game, a team must capture all three of the target buildings</li>
+    // <li>Additionally, a team can forfeit with the "Forfeit" button, granting the other team the victory</li>
+    // <li>To chat with your team, press the "Chat" button to open up the chat-box</li>
 
   // let tasks = _.map(params.tasks, (pp) => <Task key={pp.id} user={params.user} task={pp} />);
 }
