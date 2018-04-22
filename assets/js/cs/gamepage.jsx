@@ -25,7 +25,6 @@ let gtoken = JSON.parse(localStorage.getItem("gameToken")); //caching the channe
 function GamePage(props) {
   let attackPercentage = 0;
   // score = updateScore();
-  let alert_msg = "";
   let attack_msg = "";
 
   if(gtoken && !joined){
@@ -99,11 +98,11 @@ function GamePage(props) {
         // $.when(updateGameState(data)).then(channel.push("broadcast_my_state", props.game));
       }
     })
-    alert_msg = thisAtk;
-    console.log(alert_msg)
-    // $("#game-alert-box").html(alert_msg);
+    alert_msg_notif = thisAtk;
+    console.log(alert_msg_notif)
+    $("#game-alert-box").empty().append(alert_msg_notif);
     $("#game-alert-box").show();
-    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg_notif = ""; }, 2000);
 
   }
 
@@ -143,18 +142,22 @@ function GamePage(props) {
         channel.push("ko", {user_id: attackerId});
       }
     })
-    alert_msg = thisAtk;
-    console.log(alert_msg)
-    $("#game-alert-box").html(alert_msg);
+    alert_msg_notif = thisAtk;
+    console.log(alert_msg_notif)
+    $("#game-alert-box").empty().append(alert_msg_notif);
     $("#game-alert-box").show();
-    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg_notif = ""; }, 2000);
 
   }
 
+  var alert_msg_notif = "";
+
+
   function attack(){
     console.log("ATTACK")
+    console.log(alert_msg_notif)
     let currLoc = {};
-    let thisAtk = <div></div>;
+    let thisAtk = "";
     navigator.geolocation.getCurrentPosition(function(pos){
       currLoc.lat = pos.coords.latitude;
       currLoc.lng = pos.coords.longitude;
@@ -184,13 +187,13 @@ function GamePage(props) {
         locationFin = locationDisList[0];
         attackable = true;
       } else {
-        console.log("ALERT")
-        console.log(alert_msg)
+        // console.log("ALERT")
+        // console.log(alert_msg_notif)
         // alert("You are not close enough to any building to attack it!");
-        thisAtk = "You are not close enough to any building to attack it!";
+        thisAtk = "Not close enough.";
       }
 
-      console.log(alert_msg)
+      console.log(alert_msg_notif)
       if(attackable){
         console.log("ATTACKER")
         console.log(locationFin.attacker.team)
@@ -217,12 +220,12 @@ function GamePage(props) {
       }
     })
     console.log(thisAtk)
-    alert_msg = thisAtk;
-    console.log(alert_msg)
-    document.getElementById("game-alert-box").innerHTML = thisAtk;
-    // $("#game-alert-box").html(thisAtk);
+    window.alert_msg_notif = thisAtk;
+    // console.log(window.alert_msg_notif)
+    // document.getElementById("game-alert-box").innerHTML = atkElem;
+    $("#game-alert-box").empty().append(thisAtk);
     $("#game-alert-box").show();
-    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg = ""; }, 2000);
+    setTimeout(function(){ $("#game-alert-box").hide(); alert_msg_notif = ""; }, 2000);
   }
 
   var attackTimer = 0;
@@ -447,9 +450,12 @@ console.log("JOINED"+joined)
       }
     }
 
-    console.log("ALERT!"+alert_msg)
-    if(alert_msg == ""){
+    // console.log("ALERT!"+window.alert_msg_notif)
+    if(alert_msg_notif == ""){
       $("#game-alert-box").hide();
+    } else {
+      $("#game-alert-box").show();
+
     }
 
     if(attackNotifs.length == 0){
@@ -502,7 +508,6 @@ console.log("JOINED"+joined)
       <div className="attackProgressBar">
         {attackProgress}
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
-          <p>{alert_msg}</p>
         </div>
         <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
           {attackNotifs}

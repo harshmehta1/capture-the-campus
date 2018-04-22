@@ -71,10 +71,49 @@ export default function Lobby(props) {
                 onClick={() => api.findunrankedMatch(props.token.user_id, $("input[name=pvp]:checked").val())}>Play Unranked</Button></Link>
             </div>
           </div>
+          <div className="row">
+            <div className="col-sm-5"></div>
+            <div className="col-sm-2" style={{padding: '1vh'}}>
+              <button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#instructions">Instructions</button>
+            </div>
+            <div className="col-sm-5"></div>
+          </div>
         </div>
       </div>
     </div>
+
+
+    <div className="modal fade" id="instructions" tabIndex="-1" role="dialog" aria-labelledby="instructionsTitle" aria-hidden="true">
+      <div className="modal-dialog" role="document">
+        <div className="modal-content">
+        <div className="modal-header">
+          <h5 className="modal-title" id="instructionsTitle">Instructions</h5>
+          <button type="button" className="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+          <div className="modal-body">
+            <ol>
+              <li style={{padding: '3px'}}>Select a gamemode (ranked vs unranked) and a game size (1, 2, 3 or 4 person teams)</li>
+              <li style={{padding: '3px'}}>Wait for all players to join the game</li>
+              <li style={{padding: '3px'}}>The game will take a few seconds to get your position</li>
+              <li style={{padding: '3px'}}>Your team's points are equal to the number of buildings you have captured</li>
+              <li style={{padding: '3px'}}>The buildings' names are noted in a box on-screen</li>
+              <li style={{padding: '3px'}}>To capture a building, you must go close enough to it and press the "Attack!" button (in the bottom right) to start an on-screen countdown</li>
+              <li style={{padding: '3px'}}>After a minute, the countdown will be over and the building will be under your team's control</li>
+              <li style={{padding: '3px'}}>If you notice an opponent capturing a building, you can go to that building and press the "Defend" button. Doing so will interrupt the opponent's capture and knock out that specific player. This can happen to you while you're capturing a building!</li>
+              <li style={{padding: '3px'}}>If you are knocked out, you cannot attack or defend buildings. You must go to Snell Library and revive yourself by pressing the "Revive" button</li>
+              <li style={{padding: '3px'}}>To win a game, a team must capture all three of the target buildings</li>
+              <li style={{padding: '3px'}}>Additionally, a team can forfeit with the "Forfeit" button, granting the other team the victory</li>
+              <li style={{padding: '3px'}}>To chat with your team, press the "Chat" button to open up the chat-box</li>
+            </ol>
+          </div>
+        </div>
+      </div>
+    </div>
+
     </div>;
+
 
   // let tasks = _.map(params.tasks, (pp) => <Task key={pp.id} user={params.user} task={pp} />);
 }
