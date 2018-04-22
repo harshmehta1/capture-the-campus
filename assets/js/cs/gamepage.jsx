@@ -368,7 +368,7 @@ console.log("JOINED"+joined)
        var text = resp.msg + "\n" + $('#chatOutput').html()
        $("#chatOutput").html(text.replace(/\n/g, "<br />"));
        $("#chatText").val("");
-       messageNotifs = "New Message From" + resp.msg.substr(0, resp.msg.indexOf(":")) + " ";
+       messageNotifs = "New Message From " + resp.msg.substr(0, resp.msg.indexOf(":")) + " ";
      }
   }
 
