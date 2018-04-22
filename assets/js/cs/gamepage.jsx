@@ -50,6 +50,9 @@ function GamePage(props) {
           <div className="col">
             <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Forfeit</button></div>
           </div>
+          <div className="col">
+            <div className="panel-wrapper"><button onClick={() => showBuildingStatus()} className="btn btn-success btn-panel">Buildings</button></div>
+          </div>
         </div>
       </div> :
       <div className="container">
@@ -65,6 +68,11 @@ function GamePage(props) {
           <div className="col">
             <div className="panel-wrapper"><button type="button" className="btn btn-primary btn-panel" data-toggle="modal" data-target="#exampleModalLong">Chat</button></div>
           </div>
+          <div className="col">
+            <div className="panel-wrapper"><button onClick={() => showBuildingStatus()} className="btn btn-success btn-panel">Buildings</button></div>
+          </div>
+        </div>
+        <div className="row">
           <div className="col">
             <div className="panel-wrapper"><button onClick={() => validateLeaveGame()} className="btn btn-danger btn-panel">Forfeit</button></div>
           </div>
@@ -331,6 +339,9 @@ console.log("JOINED"+joined)
     console.log(currentTeam)
   }
 
+  function showBuildingStatus(){
+    $("#building-screen").modal('show');
+  }
 
   function validateLeaveGame(){
     $("#leave-game").modal('show');
@@ -365,6 +376,20 @@ console.log("JOINED"+joined)
   let game = <div></div>;
   if (props.gameToken) {
 
+
+    let buildingStatus = _.map(props.game.buildings, function(x, ii){
+      let status;
+      if (x.captured){
+        if(x.owner == "team1"){
+          status = "Team GREEN";
+        } else {
+          status = "Team RED";
+          }
+      } else {
+        status = "Not Captured";
+      }
+      return <div key={ii}>{x.name}: {status}</div>;
+    });
     // let attackProgress = <div></div>;
     // if(attacking){
 
@@ -389,7 +414,7 @@ console.log("JOINED"+joined)
           if(tl1 <= 0)
             clearInterval(countdownTimer1);
           },1000);
-        return <div><p>TEAM 2 is attacking building {x.name}. You have <span id="countdown1">60</span> seconds to defend the building!</p></div>;
+        return <div><p>{x.name} is under attack! You have <span id="countdown1">60</span> seconds to defend the building!</p></div>;
       });
       if(attackNotifs.length > 0){
         attack_msg = "ongoing";
@@ -407,7 +432,7 @@ console.log("JOINED"+joined)
           if(tl2 <= 0)
             clearInterval(countdownTimer2);
           },1000);
-        return <div><p>TEAM 1 is attacking building {x.name}. You have <span id="countdown2">60</span> seconds to defend the building!</p></div>;
+        return <div><p>{x.name} is under attack! You have <span id="countdown2">60</span> seconds to defend the building!</p></div>;
       });
       if(attackNotifs.length > 0){
         attack_msg = "ongoing";
@@ -507,6 +532,16 @@ console.log("JOINED"+joined)
       </div>
       <div className="attackProgressBar">
         {attackProgress}
+        <div className="container-fluid game-stats">
+          <div className="row">
+          <div className="col" id="teamGreenScore">
+            Team Green: {props.game.team1Score}
+          </div>
+          <div id="teamRedScore" className="col">
+            Team Red: {props.game.team2Score}
+          </div>
+          </div>
+        </div>
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
         </div>
         <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
@@ -608,6 +643,21 @@ console.log("JOINED"+joined)
             </div>
             <div className="modal-footer">
               <button type="button" className="btn btn-primary" data-dismiss="modal">Okay</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="modal fade" id="building-screen" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+        <div className="modal-dialog" role="document">
+          <div className="modal-content">
+            <div className="modal-body">
+              <h5 className="modal-title">Building Status</h5>
+              <hr/>
+              {buildingStatus}
+            </div>
+            <div className="modal-footer">
+              <button type="button" className="btn btn-primary" data-dismiss="modal">Close</button>
             </div>
           </div>
         </div>
