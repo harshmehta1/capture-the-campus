@@ -508,7 +508,6 @@ console.log("JOINED"+joined)
       <div className="attackProgressBar">
         {attackProgress}
         <div id="game-alert-box" className="alert alert-warning alert-dismissible fade show" role="alert" aria-hidden="true">
-          <p>{window.alert_msg_notif}</p>
         </div>
         <div id="attack-alert-box" className="alert alert-danger alert-dismissible fade show" role="alert" aria-hidden="true">
           {attackNotifs}
