@@ -412,6 +412,7 @@ console.log("JOINED"+joined)
             tl1--;
             document.getElementById("countdown1").textContent = tl1;
           if(tl1 <= 0)
+            tl1 = 1;
             clearInterval(countdownTimer1);
           },1000);
         return <div><p>{x.name} is under attack! You have <span id="countdown1">60</span> seconds to defend the building!</p></div>;
@@ -430,6 +431,7 @@ console.log("JOINED"+joined)
             tl2--;
             document.getElementById("countdown2").textContent = tl2;
           if(tl2 <= 0)
+            tl2 = 1;
             clearInterval(countdownTimer2);
           },1000);
         return <div><p>{x.name} is under attack! You have <span id="countdown2">60</span> seconds to defend the building!</p></div>;
