@@ -257,6 +257,17 @@ defmodule CaptureCampus.Game do
     newBuildings = delBuildings ++ [building]
 
     game = Map.replace!(game, "buildings", newBuildings)
+    
+    capturedBuildings = Enum.map(newBuildings, fn (x) -> x["captured"] end) 
+    allCaptured? = Enum.all?(capturedBuildings, fn (x) -> x == true end)   
+    if allCaptured? == true do
+      game = Map.put(game, "status", "Game Over!")
+      if Map.get(game, "team1Score") > Map.get(game, "team2Score") do
+        game = Map.put(game, "winner", "Team 1")
+      else
+        game = Map.put(game, "winner", "Team 2")
+      end
+    end
     game
     # if (currentTeam == "team1"){
     #   var currentlyAttacking = props.game.team1Attacks;
